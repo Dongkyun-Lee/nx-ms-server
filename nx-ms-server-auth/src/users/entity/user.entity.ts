@@ -12,7 +12,7 @@ export class User {
   email: string;
 
   @Prop({ required: true })
-  password?: string; // 비밀번호는 조회 시 제외될 수 있도록 선택적 속성
+  password?: string;
 
   @Prop({ default: ['USER'] })
   roles: string[];

@@ -11,7 +11,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI), // 환경 변수에서 URI 읽기
+    MongooseModule.forRoot(process.env.MONGODB_URI),
     AuthModule,
     UsersModule,
   ],
