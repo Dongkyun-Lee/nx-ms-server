@@ -9,17 +9,20 @@ services:
     volumes:
       - mongodb_data:/data/db
     networks:
-      - app-network
+      - internal-network
+      - gateway-network
 
   nx-ms-server-gateway:
-    build: ./nx-ms-server-gateway
+    build:
+      context: ./nx-ms-server-gateway
+      dockerfile: Dockerfile.local
     container_name: nx-ms-server-gateway
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - AUTH_SERVICE_URL=http://nx-ms-server-auth:3001
-      - EVENT_SERVICE_URL=http://nx-ms-server-event:3002
+      - AUTH_SERVICE_URL=http://nx-ms-server-auth:3000
+      - EVENT_SERVICE_URL=http://nx-ms-server-event:3000
       - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
       - MONGODB_URI=mongodb://mongodb:27017/
     depends_on:
@@ -27,17 +30,20 @@ services:
       - nx-ms-server-auth
       - nx-ms-server-event
     networks:
-      - app-network
+      - gateway-network
+      - internal-network
     volumes:
       - ./nx-ms-server-gateway:/app
     restart: on-failure
     command: yarn start:dev
 
   nx-ms-server-auth:
-    build: ./nx-ms-server-auth
+    build:
+      context: ./nx-ms-server-auth
+      dockerfile: Dockerfile.local
     container_name: nx-ms-server-auth
     ports:
-      - "3001:3000"
+      - :3000
     environment:
       - NODE_ENV=development
       - JWT_SECRET=your-auth-jwt-secret
@@ -45,31 +51,36 @@ services:
     depends_on:
       - mongodb
     networks:
-      - app-network
+      - internal-network
     volumes:
       - ./nx-ms-server-auth:/app
     restart: on-failure
     command: yarn start:dev
 
   nx-ms-server-event:
-    build: ./nx-ms-server-event
+    build:
+      context: ./nx-ms-server-event
+      dockerfile: Dockerfile.local
     container_name: nx-ms-server-event
     ports:
-      - "3002:3000"
+      - :3000
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongodb:27017/
     depends_on:
       - mongodb
     networks:
-      - app-network
+      - internal-network
     volumes:
       - ./nx-ms-server-event:/app
     restart: on-failure
     command: yarn start:dev
 
 networks:
-  app-network:
+  internal-network:
+    driver: bridge
+    internal: true
+  gateway-network:
     driver: bridge
 
 volumes:
