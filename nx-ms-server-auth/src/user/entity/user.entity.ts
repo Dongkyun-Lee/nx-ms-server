@@ -5,8 +5,11 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop({ required: true })
-  name: string;
+  @Prop({ required: true, unique: true })
+  id: number;
+
+  @Prop({ required: true, unique: true })
+  nickName: string;
 
   @Prop({ required: true, unique: true })
   email: string;
@@ -22,6 +25,9 @@ export class User {
 
   @Prop({ default: Date.now })
   updatedAt: Date;
+
+  @Prop()
+  refreshToken: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
