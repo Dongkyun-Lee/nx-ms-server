@@ -10,16 +10,4 @@ import { Request } from 'express';
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @Get()
-  async getHello(
-    @Req() req: Request,
-    @Query() query: any,
-    @Headers() headers: any,
-  ): Promise<GetHelloResponse> {
-    return this.eventService.getHello(
-      req.path,
-      query,
-      headers,
-    );
-  }
 }

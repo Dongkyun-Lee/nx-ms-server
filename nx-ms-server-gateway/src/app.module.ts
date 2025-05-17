@@ -4,17 +4,20 @@ import { AppService } from './app.service';
 import { EventModule } from './event/event.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LogInterceptor } from './common/interceptors/log/log.interceptor';
 import { HttpModule } from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
 import { ProxyModule } from './proxy/proxy.module';
+import { RolesGuard } from './common/guard/roles.guard';
+import { JwtAuthGuard } from './common/guard/jwt-auth.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ 
       envFilePath: ['.env.local', '.env'],
-      isGlobal: true }),
+      isGlobal: true,
+    }),
     EventModule,
     AuthModule,
     HttpModule,
@@ -35,6 +38,15 @@ import { ProxyModule } from './proxy/proxy.module';
       provide: APP_INTERCEPTOR,
       useClass: LogInterceptor,
     },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
+  exports: [JwtModule, ConfigModule],
 })
 export class AppModule {}

@@ -6,3 +6,5 @@ export const HTTP_CONSTANTS = {
   DELETE: 'delete' as HttpMethod,
   PUT: 'put' as HttpMethod,
 };
+
+export * from './roles';
