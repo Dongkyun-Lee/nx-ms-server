@@ -40,5 +40,6 @@ import { JwtModule } from '@nestjs/jwt';
       useClass: LogInterceptor,
     },
   ],
+  exports: [JwtModule],
 })
 export class AppModule {}

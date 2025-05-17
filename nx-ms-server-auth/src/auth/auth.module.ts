@@ -7,12 +7,14 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { UserService } from 'src/user/user.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/user/entity/user.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    JwtModule,
   ],
   controllers: [AuthController],
   exports: [AuthService],
