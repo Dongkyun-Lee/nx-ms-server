@@ -1,7 +1,6 @@
 import { Controller, Post, Body, Request, UseGuards, Get, NotFoundException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.gurad';
-import { JwtAuthGuard } from './guard/jwt.gurad';
 import { UserService } from '../user/user.service';
 import { LoginResponsetDto, RefreshRequestDto, RefreshResponseDto } from './dto/auth.dto';
 
@@ -31,7 +30,6 @@ export class AuthController {
     return newJwt;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Request() req) {
     return req.user;

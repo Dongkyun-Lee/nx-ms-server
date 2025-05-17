@@ -23,7 +23,7 @@ export class AuthService {
       sub: (user as UserDocument)?._id,
       email: user.email,
       nickname: user.nickname,
-      roles: user.roles,
+      roles: user.roles || ['ANONYMOUS'],
     };
     return await this.jwtService.signAsync(payload);
   }
