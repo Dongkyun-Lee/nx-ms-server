@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { User, UserDocument } from '../user/entity/user.entity';
@@ -10,6 +10,8 @@ import { RefreshResponseDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger('AuthService');
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersService: UserService,
@@ -44,6 +46,14 @@ export class AuthService {
 
   async decodeJwt(token: string): Promise<any> {
     return this.jwtService.decode(token);
+  }
+
+  async verifyJwt(token: string): Promise<any> {
+    try {
+      return await this.jwtService.verifyAsync(token, { secret: process.env.JWT_SECRET });;
+    } catch (error) {
+      return null;
+    }
   }
 
   async validateUser(email: string, password: string): Promise<User | null> {

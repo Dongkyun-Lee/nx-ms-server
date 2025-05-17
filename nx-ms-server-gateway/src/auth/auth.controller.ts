@@ -10,17 +10,6 @@ export class AuthController {
 
   @Public()
   @Roles(ROLES.ANONYMOUS)
-  @Post('/verify')
-  async verifyToken(@Body('token') token: string) {
-    if (!token) {
-      return { isValid: false, payload: null };
-    }
-    const payload = await this.authService.verifyJwt(token);
-    return { isValid: !!payload, payload };
-  }
-
-  @Public()
-  @Roles(ROLES.ANONYMOUS)
   @Post('auth/login')
   async login(
     @Request() req: any,
@@ -43,7 +32,18 @@ export class AuthController {
     return await this.authService.refreshToken(req.path, body, headers, query);
   }
 
-  @Roles(ROLES.USER, ROLES.OPERATOR, ROLES.AUDITOR, ROLES.ADMIN)
+  @Public()
+  @Roles(ROLES.ANONYMOUS)
+  @Post('auth/verify')
+  async verifyToken(@Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+    @Body() body: any,
+  ) {
+    return await this.authService.verifyJwt(req.path, body, headers, query);
+  }
+
+  @Roles(...ALL_ROLES_EXCEPT_ANONYMOUS)
   @Get('auth/profile')
   async getProfile(
     @Request() req: any,

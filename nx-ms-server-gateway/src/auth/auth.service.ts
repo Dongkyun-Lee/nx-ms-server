@@ -14,7 +14,7 @@ export class AuthService {
   constructor(
     private readonly proxyService: HttpProxyService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async getAuthUrl(path: string): Promise<string> {
     return this.SERVER_AUTH_URL + path.replace(this.GATEWAY_AUTH_PREFIX, '');
@@ -80,13 +80,22 @@ export class AuthService {
     return this.wrapReturnForm(response);
   }
 
-  async verifyJwt(token: string): Promise<any> {
-    try {
-      return await this.jwtService.verifyAsync(token, { secret: process.env.JWT_SECRET });
-    } catch (error) {
-      this.logger.error('JWT VERIFY FAILED :::', error);
-      return null;
-    }
+  async verifyJwt(path: string, body: any, headers: any, params: any) {
+    const url = await this.getAuthUrl(path);
+
+    const response = await lastValueFrom(
+      await this.proxyService.proxyPost(
+        url,
+        body,
+        {
+          'Content-Type': 'application/json',
+          Authorization: headers.authrorization,
+        },
+        params,
+      ),
+    );
+
+    return this.wrapReturnForm(response);
   }
 
   async getUserByEmail(path: string, headers: any, params: any) {

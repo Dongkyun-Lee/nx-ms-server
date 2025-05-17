@@ -30,6 +30,15 @@ export class AuthController {
     return newJwt;
   }
 
+  @Post('auth/verify')
+  async verifyToken(@Body('token') token: string) {
+    if (!token) {
+      return { isValid: false, payload: null };
+    }
+    const payload = await this.authService.verifyJwt(token);
+    return { isValid: !!payload, payload };
+  }
+
   @Get('profile')
   async getProfile(@Request() req) {
     return req.user;
