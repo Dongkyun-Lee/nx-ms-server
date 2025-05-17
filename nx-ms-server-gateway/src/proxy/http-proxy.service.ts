@@ -5,37 +5,57 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class HttpProxyService {
-  private readonly SERVER_EVENT_URL = process.env.EVENT_SERVICE_URL;
+  constructor(private readonly httpService: HttpService) {}
 
-  constructor(private readonly httpService: HttpService) { }
+  private mergeHeadersWithUser(originalHeaders: any, user?: any): any {
+    return {
+      ...originalHeaders,
+      ...(user && {
+        'x-user-id': user.sub,
+        'x-user-email': user.email,
+        'x-user-role': Array.isArray(user.roles) ? user.roles.join(',') : user.role,
+      }),
+    };
+  }
 
-  async request<T>(method: 'get' | 'post' | 'put' | 'delete', url: string, options: {
-    body?: any;
-    headers?: any;
-    params?: any;
-  }): Promise<Observable<AxiosResponse<T>>> {
+  async request<T>(
+    method: 'get' | 'post' | 'put' | 'delete',
+    url: string,
+    options: {
+      body?: any;
+      headers?: any;
+      params?: any;
+      user?: any; // user 정보 추가
+    },
+  ): Promise<Observable<AxiosResponse<T>>> {
+    const headers = this.mergeHeadersWithUser(options.headers || {}, options.user);
+
     return await this.httpService.request<T>({
       method,
       url,
-      headers: options.headers,
+      headers,
       params: options.params,
       data: options.body,
     });
   }
 
-  async proxyGet<T>(url: string, headers?: any, params?: any): Promise<Observable<AxiosResponse<T>>> {
-    return await this.httpService.get<T>(url, { headers, params });
+  async proxyGet<T>(url: string, headers?: any, params?: any, user?: any): Promise<Observable<AxiosResponse<T>>> {
+    const mergedHeaders = this.mergeHeadersWithUser(headers || {}, user);
+    return await this.httpService.get<T>(url, { headers: mergedHeaders, params });
   }
 
-  async proxyPost<T>(url: string, body?: any, headers?: any, params?: any): Promise<Observable<AxiosResponse<T>>> {
-    return await this.httpService.post<T>(url, body, { headers, params });
+  async proxyPost<T>(url: string, body?: any, headers?: any, params?: any, user?: any): Promise<Observable<AxiosResponse<T>>> {
+    const mergedHeaders = this.mergeHeadersWithUser(headers || {}, user);
+    return await this.httpService.post<T>(url, body, { headers: mergedHeaders, params });
   }
 
-  async proxyPut<T>(url: string, body?: any, headers?: any, params?: any): Promise<Observable<AxiosResponse<T>>> {
-    return await this.httpService.put<T>(url, body, { headers, params });
+  async proxyPut<T>(url: string, body?: any, headers?: any, params?: any, user?: any): Promise<Observable<AxiosResponse<T>>> {
+    const mergedHeaders = this.mergeHeadersWithUser(headers || {}, user);
+    return await this.httpService.put<T>(url, body, { headers: mergedHeaders, params });
   }
 
-  async proxyDelete<T>(url: string, headers?: any, params?: any): Promise<Observable<AxiosResponse<T>>> {
-    return await this.httpService.delete<T>(url, { headers, params });
+  async proxyDelete<T>(url: string, headers?: any, params?: any, user?: any): Promise<Observable<AxiosResponse<T>>> {
+    const mergedHeaders = this.mergeHeadersWithUser(headers || {}, user);
+    return await this.httpService.delete<T>(url, { headers: mergedHeaders, params });
   }
 }
