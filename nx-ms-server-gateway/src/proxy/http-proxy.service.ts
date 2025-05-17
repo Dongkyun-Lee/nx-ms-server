@@ -1,15 +1,16 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 
 @Injectable()
 export class HttpProxyService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService) { }
 
   private mergeHeadersWithUser(originalHeaders: any, user?: any): any {
     return {
-      ...originalHeaders,
+      'Content-Type': originalHeaders['content-type'],
+      Authorization: originalHeaders.authrorization,
       ...(user && {
         'ms-user-id': user.sub,
         'ms-user-email': user.email,
