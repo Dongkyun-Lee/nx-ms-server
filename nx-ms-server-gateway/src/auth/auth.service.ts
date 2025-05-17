@@ -82,7 +82,7 @@ export class AuthService {
 
   async verifyJwt(token: string): Promise<any> {
     try {
-      return await this.jwtService.verifyAsync(token, { secret: process.env.JWT_SECRET });;
+      return await this.jwtService.verifyAsync(token, { secret: process.env.JWT_SECRET });
     } catch (error) {
       this.logger.error('JWT VERIFY FAILED :::', error);
       return null;

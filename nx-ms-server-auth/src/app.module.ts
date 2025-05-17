@@ -23,14 +23,6 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '6h' },
-      }),
-      inject: [ConfigService],
-    }),
   ],
   controllers: [AppController],
   providers: [
@@ -40,6 +32,6 @@ import { JwtModule } from '@nestjs/jwt';
       useClass: LogInterceptor,
     },
   ],
-  exports: [JwtModule],
+  exports: [ConfigModule],
 })
 export class AppModule {}

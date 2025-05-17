@@ -2,7 +2,6 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { User, UserDocument } from '../user/entity/user.entity';
-import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
@@ -24,7 +23,7 @@ export class AuthService {
       nickname: user.nickname,
       roles: user.roles || ['ANONYMOUS'],
     };
-    return await this.jwtService.signAsync(payload);
+    return await this.jwtService.signAsync(payload, { secret: process.env.JWT_SECRET });
   }
 
   async generateRefreshToken(): Promise<string> {
