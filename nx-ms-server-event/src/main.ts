@@ -7,7 +7,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('nx-ms-server-event API')
-    .setDescription('nx-ms-server-event - 이벤트 관리')
+    .setDescription('이벤트 생성, 보상 정의, 보상 요청 처리, 지급 상태 저장')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
