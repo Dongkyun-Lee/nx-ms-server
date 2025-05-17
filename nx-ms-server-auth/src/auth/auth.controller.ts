@@ -30,7 +30,7 @@ export class AuthController {
     return newJwt;
   }
 
-  @Post('auth/verify')
+  @Post('verify')
   async verifyToken(@Body('token') token: string) {
     if (!token) {
       return { isValid: false, payload: null };
