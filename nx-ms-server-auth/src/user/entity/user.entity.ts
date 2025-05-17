@@ -6,10 +6,7 @@ export type UserDocument = User & Document;
 @Schema()
 export class User {
   @Prop({ required: true, unique: true })
-  id: number;
-
-  @Prop({ required: true, unique: true })
-  nickName: string;
+  nickname: string;
 
   @Prop({ required: true, unique: true })
   email: string;
