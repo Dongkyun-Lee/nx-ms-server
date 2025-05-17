@@ -27,101 +27,44 @@ export class AuthService {
     };
   }
 
-  async login(path: string, body: any, headers: any, params: any) {
+  async login(req: any, path: string, body: any, headers: any, params: any) {
     const url = await this.getAuthUrl(path);
-
-    const response = await lastValueFrom(
-      await this.proxyService.proxyPost(
-        url,
-        body,
-        {
-          'Content-Type': 'application/json',
-          Authorization: headers.authrorization,
-        },
-        params,
-      ),
-    );
+    const response = await lastValueFrom(await this.proxyService.proxyPost(url, body, headers, params, req?.user || undefined));
 
     return this.wrapReturnForm(response);
   }
 
-  async refreshToken(path: string, body: any, headers: any, params: any) {
+  async refreshToken(req: any, path: string, body: any, headers: any, params: any) {
     const url = await this.getAuthUrl(path);
-
-    const response = await lastValueFrom(
-      await this.proxyService.proxyPost(
-        url,
-        body,
-        {
-          'Content-Type': 'application/json',
-          Authorization: headers.authrorization,
-        },
-        params,
-      ),
-    );
+    const response = await lastValueFrom(await this.proxyService.proxyPost(url, body, headers, params, req?.user || undefined));
 
     return this.wrapReturnForm(response);
   }
 
-  async getProfile(path: string, headers: any, params: any) {
+  async getProfile(req: any, path: string, headers: any, params: any) {
     const url = await this.getAuthUrl(path);
-
-    const response = await lastValueFrom(
-      await this.proxyService.proxyGet(
-        url,
-        {
-          'Content-Type': 'application/json',
-          Authorization: headers.authrorization,
-        },
-        params,
-      ),
-    );
+    const response = await lastValueFrom(await this.proxyService.proxyGet(url, headers, params, req?.user || undefined));
 
     return this.wrapReturnForm(response);
   }
 
-  async verifyJwt(path: string, body: any, headers: any, params: any) {
+  async verifyJwt(req: any, path: string, body: any, headers: any, params: any) {
     const url = await this.getAuthUrl(path);
-
-    const response = await lastValueFrom(
-      await this.proxyService.proxyPost(
-        url,
-        body,
-        {
-          'Content-Type': 'application/json',
-          Authorization: headers.authrorization,
-        },
-        params,
-      ),
-    );
+    const response = await lastValueFrom(await this.proxyService.proxyPost(url, body, headers, params, req?.user || undefined));
 
     return this.wrapReturnForm(response);
   }
 
-  async getUserByEmail(path: string, headers: any, params: any) {
+  async getUserByEmail(req: any, path: string, headers: any, params: any) {
     const url = await this.getAuthUrl(path);
-
-    const response = await lastValueFrom(
-      await this.proxyService.proxyGet(url, headers, params),
-    );
+    const response = await lastValueFrom(await this.proxyService.proxyGet(url, headers, params, req?.user || undefined));
 
     return this.wrapReturnForm(response);
   }
 
-  async createUser(path: string, body: any, headers: any, params: any) {
+  async createUser(req: any, path: string, body: any, headers: any, params: any) {
     const url = await this.getAuthUrl(path);
-
-    const response = await lastValueFrom(
-      await this.proxyService.proxyPost(
-        url,
-        body,
-        {
-          'Content-Type': 'application/json',
-          Authorization: headers.authrorization,
-        },
-        params,
-      ),
-    );
+    const response = await lastValueFrom(await this.proxyService.proxyPost(url, body, headers, params, req?.user || undefined));
 
     return this.wrapReturnForm(response);
   }

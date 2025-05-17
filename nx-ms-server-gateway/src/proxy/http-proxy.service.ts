@@ -11,9 +11,10 @@ export class HttpProxyService {
     return {
       ...originalHeaders,
       ...(user && {
-        'x-user-id': user.sub,
-        'x-user-email': user.email,
-        'x-user-role': Array.isArray(user.roles) ? user.roles.join(',') : user.role,
+        'ms-user-id': user.sub,
+        'ms-user-email': user.email,
+        'ms-user-nickname': user.nickname,
+        'ms-user-role': Array.isArray(user.roles) ? user.roles.join(',') : user.role,
       }),
     };
   }

@@ -1,6 +1,7 @@
-import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserRequestDto, CreateUserResponseDto } from './dto/user.dto';
+import { AuthenticatedUser } from 'src/common/decorator/authenticated-user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -17,10 +18,10 @@ export class UserController {
   }
 
   @Get(':email')
-  async getUserByEmail(@Param('email') email: string) {
+  async getUserByEmail(@Param('email') email: string, @AuthenticatedUser() authUser) {
     const user = await this.userService.findByEmail(email);
+
     if (!user) {
-      // throw new NotFoundException({ status: 404, data: null, error:  true, errorMessage: `${email} 유저가 존재하지 않습니다.` },`${email} 유저가 존재하지 않습니다.`)
       return { status: 404, data: null, error:  true, errorMessage: `${email} 유저가 존재하지 않습니다.` }
     }
     return user;
