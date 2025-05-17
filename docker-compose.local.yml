@@ -19,11 +19,14 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=development
+      - SERVER_GATEWAY_AUTH_PREFIX=/api/auth
+      - SERVER_GATEWAY_EVENT_PREFIX=/api/event
+      - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
       - AUTH_SERVICE_URL=http://nx-ms-server-auth:3000
       - EVENT_SERVICE_URL=http://nx-ms-server-event:3000
-      - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
+      - NODE_ENV=development
       - MONGODB_URI=mongodb://mongodb:27017/
+      - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
     depends_on:
       - mongodb
       - nx-ms-server-auth
@@ -33,6 +36,7 @@ services:
       - internal-network
     volumes:
       - ./nx-ms-server-gateway:/app
+      - /app/node_modules
     restart: on-failure
 
   nx-ms-server-auth:
@@ -43,16 +47,17 @@ services:
     ports:
       - 3001:3000
     environment:
+      - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
+      - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
       - NODE_ENV=development
-      - JWT_SECRET=your-auth-jwt-secret
       - MONGODB_URI=mongodb://mongodb:27017/
     depends_on:
       - mongodb
     networks:
       - gateway-network
-      - internal-network
     volumes:
       - ./nx-ms-server-auth:/app
+      - /app/node_modules
     restart: on-failure
 
   nx-ms-server-event:
@@ -63,14 +68,19 @@ services:
     ports:
       - 3002:3000
     environment:
+      - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
+      - AUTH_SERVICE_URL=http://nx-ms-server-auth:3000
+      - EVENT_SERVICE_URL=http://nx-ms-server-event:3000
+      - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongodb:27017/
     depends_on:
       - mongodb
     networks:
-      - internal-network
+      - gateway-network
     volumes:
       - ./nx-ms-server-event:/app
+      - /app/node_modules
     restart: on-failure
 
 networks:

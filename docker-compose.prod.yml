@@ -5,7 +5,7 @@ services:
     image: mongo:latest
     container_name: mongodb
     ports:
-      - "27017:27017"
+      - ":27017"
     volumes:
       - mongodb_data:/data/db
     networks:
@@ -17,10 +17,14 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=development
-      - AUTH_SERVICE_URL=http://nx-ms-server-auth:3001
-      - EVENT_SERVICE_URL=http://nx-ms-server-event:3002
+      - SERVER_GATEWAY_AUTH_PREFIX=/api/auth
+      - SERVER_GATEWAY_EVENT_PREFIX=/api/evesnt
+      - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
+      - AUTH_SERVICE_URL=http://nx-ms-server-auth:3000
+      - EVENT_SERVICE_URL=http://nx-ms-server-event:3000
+      - NODE_ENV=production
       - MONGODB_URI=mongodb://mongodb:27017/
+      - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
     depends_on:
       - mongodb
       - nx-ms-server-auth
@@ -30,12 +34,15 @@ services:
     restart: on-failure
 
   nx-ms-server-auth:
-    build: ./nx-ms-server-auth
+    build:
+      context: ./nx-ms-server-auth
+      dockerfile: Dockerfile
     container_name: nx-ms-server-auth
     ports:
-      - "3001:3000"
+      - ":3000"
     environment:
-      - NODE_ENV=development
+      - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
+      - NODE_ENV=production
       - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
       - MONGODB_URI=mongodb://mongodb:27017/
     depends_on:
@@ -45,12 +52,15 @@ services:
     restart: on-failure
 
   nx-ms-server-event:
-    build: ./nx-ms-server-event
+    build:
+      context: ./nx-ms-server-event
+      dockerfile: Dockerfile
     container_name: nx-ms-server-event
     ports:
-      - "3002:3000"
+      - ":3000"
     environment:
-      - NODE_ENV=development
+      - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
+      - NODE_ENV=production
       - MONGODB_URI=mongodb://mongodb:27017/
     depends_on:
       - mongodb

@@ -15,15 +15,21 @@ import { JwtModule } from '@nestjs/jwt';
       envFilePath: ['.env.local', '.env'],
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI),
     AuthModule,
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
+        uri: config.get<string>('MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+    }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: '6h' },
       }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [AppController],

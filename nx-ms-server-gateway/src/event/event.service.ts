@@ -9,45 +9,19 @@ import { HttpMethod } from 'src/common/types';
 
 @Injectable()
 export class EventService {
-  private readonly eventServiceUrl: string;
+  private readonly GATEWAY_EVENT_PREFIX: string = process.env.SERVER_GATEWAY_EVENT_PREFIX;
+  private readonly EVENT_URL: string = process.env.EVENT_SERVICE_URL;
 
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
-  ) {
-    this.eventServiceUrl = this.configService.get<string>('EVENT_SERVICE_URL');
+  constructor(private readonly httpService: HttpService) {}
+
+  async getAuthUrl(path: string): Promise<string> {
+    return this.EVENT_URL + path.replace(this.GATEWAY_EVENT_PREFIX, '');
   }
 
-  proxyRequest<T>(
-    method: HttpMethod,
-    path: string,
-    body?: any,
-    headers?: any,
-    params?: any,
-  ): Observable<AxiosResponse<T>> {
-    const url = `${this.eventServiceUrl}${path}`;
-    const requestConfig = { headers, params };
-    return this.httpService[method]<T>(url, body, requestConfig);
-  }
-
-  async getHello(
-    path: string,
-    query: any,
-    headers: any,
-  ): Promise<GetHelloResponse> {
-    return this.proxyRequest<GetHelloResponse>(
-      HTTP_CONSTANTS.GET,
-      path,
-      undefined,
-      headers,
-      query,
-    )
-      .pipe(
-        map((response: AxiosResponse) => ({
-          data: response.data,
-          status: response.status,
-        })),
-      )
-      .toPromise();
+  async wrapReturnForm(response: AxiosResponse<unknown, any>) {
+    return {
+      status: response.status,
+      data: response.data,
+    };
   }
 }

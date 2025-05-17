@@ -6,10 +6,8 @@ import { EventService } from './event.service';
 import { GetHelloResponse } from './types/event.interface';
 import { Request } from 'express';
 
-@Controller('events')
+@Controller('event')
 export class EventController {
-  private readonly EVENT_SERVER_PREFIX = '/events';
-
   constructor(private readonly eventService: EventService) {}
 
   @Get()
@@ -19,7 +17,7 @@ export class EventController {
     @Headers() headers: any,
   ): Promise<GetHelloResponse> {
     return this.eventService.getHello(
-      req.path.replace(this.EVENT_SERVER_PREFIX, ''),
+      req.path,
       query,
       headers,
     );

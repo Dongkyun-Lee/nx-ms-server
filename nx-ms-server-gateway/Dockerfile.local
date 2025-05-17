@@ -2,4 +2,10 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-CMD [ "node", "dist/main.js" ]
+COPY package.json yarn.lock ./
+
+RUN yarn install --frozen-lockfile
+
+COPY . .
+
+CMD ["yarn", "start:dev"]

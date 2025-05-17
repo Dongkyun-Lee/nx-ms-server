@@ -37,12 +37,6 @@ export class AuthController {
     return req.user;
   }
 
-  @Post('verify')
-  async verifyToken(@Body('token') token: string) {
-    const payload = await this.authService.verifyJwt(token);
-    return { isValid: !!payload, payload };
-  }
-
   @Post('decode')
   async decodeToken(@Body('token') token: string) {
     const payload = this.authService.decodeJwt(token);

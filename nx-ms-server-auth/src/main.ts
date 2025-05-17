@@ -4,7 +4,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('auth');
 
   const config = new DocumentBuilder()
     .setTitle('nx-ms-server-auth API')

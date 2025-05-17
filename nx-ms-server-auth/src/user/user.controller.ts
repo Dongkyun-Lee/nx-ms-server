@@ -2,11 +2,11 @@ import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/c
 import { UserService } from './user.service';
 import { CreateUserRequestDto, CreateUserResponseDto } from './dto/user.dto';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
+  @Get('healthCheck')
   getUserHealth(): string {
     return this.userService.getUserHealth();
   }

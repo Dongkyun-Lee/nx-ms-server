@@ -34,8 +34,6 @@ export class AuthService {
 
   async extendJwtExpirationWithRefreshToken(refreshToken: string, email: string): Promise<RefreshResponseDto> {
     const user = await this.usersService.findByEmail(email);
-    console.log(user.refreshToken);
-    console.log(refreshToken);
     if (!user || user.refreshToken !== refreshToken) {
       throw new UnauthorizedException('Invalid refresh token.');
     }
@@ -46,22 +44,12 @@ export class AuthService {
     return { accessToken: jwt, refreshToken: newRefresh };
   }
 
-  async verifyJwt(token: string): Promise<any> {
-    try {
-      return await this.jwtService.verifyAsync(token);
-    } catch (error) {
-      // 유효한 토큰이 아닐 때
-      return null;
-    }
-  }
-
   async decodeJwt(token: string): Promise<any> {
     return this.jwtService.decode(token);
   }
 
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersService.findByEmail(email);
-    console.error(user);
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
