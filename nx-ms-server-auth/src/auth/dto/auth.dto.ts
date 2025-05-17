@@ -38,6 +38,6 @@ export class LoginRequestDto extends PickType(AuthDto, ['email', 'password']) {}
 
 export class LoginResponsetDto extends PickType(AuthDto, ['accessToken', 'refreshToken']) {}
 
-export class RefreshRequestDto extends PickType(AuthDto, ['id', 'refreshToken']) {}
+export class RefreshRequestDto extends PickType(AuthDto, ['email', 'refreshToken']) {}
 
-export class RefreshResponsetDto extends PickType(AuthDto, ['accessToken', 'refreshToken']) {}
+export class RefreshResponseDto extends PickType(AuthDto, ['accessToken', 'refreshToken']) {}

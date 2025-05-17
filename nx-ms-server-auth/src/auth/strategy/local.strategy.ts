@@ -1,21 +1,20 @@
+// auth/strategy/local.strategy.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { AuthService } from '../auth.service';
-import { LoginRequestDto } from '../../user/dto/login-request.dto';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly authService: AuthService) {
-    // body에 id 포함해야 함함
-    super({ usernameField: 'id' });
+  constructor(private authService: AuthService) {
+    // default: username -> email
+    super({ usernameField: 'email' });
   }
 
-  async validate(id: number, password: string): Promise<any> {
-    // 서비스 단 사용자 검증
-    const user = await this.authService.validateUser(id, password);
+  async validate(email: string, password: string): Promise<any> {
+    const user = await this.authService.validateUser(email, password);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('이메일 또는 비밀번호가 올바르지 않습니다.');
     }
     return user;
   }

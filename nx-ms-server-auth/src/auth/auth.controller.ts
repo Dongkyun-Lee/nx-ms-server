@@ -1,9 +1,9 @@
-import { Controller, Post, Body, Request, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, Request, UseGuards, Get, NotFoundException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.gurad';
 import { JwtAuthGuard } from './guard/jwt.gurad';
 import { UserService } from '../user/user.service';
-import { LoginRequestDto } from '../user/dto/login-request.dto';
+import { LoginResponsetDto, RefreshRequestDto, RefreshResponseDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -14,16 +14,20 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req, @Body() loginRequestDto: LoginRequestDto) {
-    const jwt = await this.authService.generateJwt(req.user);
+  async login(@Request() req: any): Promise<LoginResponsetDto> | null {
+    const user = req.user;
+    if (!user) {
+      throw new NotFoundException({}, '등록되지 않은 사용자입니다. \n email과 비밀번호를 확인해주세요');
+    }
+    const jwt = await this.authService.generateJwt(user);
     const refreshToken = await this.authService.generateRefreshToken();
-    await this.usersService.updateRefreshToken(req.user.id, refreshToken);
+    await this.authService.updateRefreshToken(user.email, refreshToken);
     return { accessToken: jwt, refreshToken };
   }
 
   @Post('refresh')
-  async refreshToken(@Body('refreshToken') refreshToken: string, @Body('id') id: number) {
-    const newJwt = await this.authService.extendJwtExpirationWithRefreshToken(refreshToken, id);
+  async refreshToken(@Body() body: RefreshRequestDto): Promise<RefreshResponseDto> {
+    const newJwt = await this.authService.extendJwtExpirationWithRefreshToken(body.refreshToken, body.email);
     return newJwt;
   }
 

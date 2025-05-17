@@ -7,8 +7,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
-import { LocalAuthGuard } from './guard/local-auth.gurad';
-import { JwtAuthGuard } from './guard/jwt.gurad';
 import { UserService } from 'src/user/user.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/user/entity/user.entity';
@@ -33,8 +31,6 @@ import { User, UserSchema } from 'src/user/entity/user.entity';
     AuthService,
     JwtStrategy,
     LocalStrategy,
-    LocalAuthGuard,
-    JwtAuthGuard,
     UserService,
   ],
 })

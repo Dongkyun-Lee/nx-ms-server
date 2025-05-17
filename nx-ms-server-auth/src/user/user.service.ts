@@ -57,12 +57,4 @@ export class UserService {
     }
     return deletedUser;
   }
-
-  async updateRefreshToken(email: string, refreshToken: string): Promise<User> {
-    const updatedUser = await this.userModel.findOneAndUpdate({ email }, { refreshToken }, { new: true }).exec();
-    if (!updatedUser) {
-      throw new NotFoundException(`User with Email "${email}" not found`);
-    }
-    return updatedUser;
-  }
 }
