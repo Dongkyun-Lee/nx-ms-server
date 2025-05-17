@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   mongodb:
@@ -35,7 +34,6 @@ services:
     volumes:
       - ./nx-ms-server-gateway:/app
     restart: on-failure
-    command: yarn start:dev
 
   nx-ms-server-auth:
     build:
@@ -43,7 +41,7 @@ services:
       dockerfile: Dockerfile.local
     container_name: nx-ms-server-auth
     ports:
-      - :3000
+      - 3001:3000
     environment:
       - NODE_ENV=development
       - JWT_SECRET=your-auth-jwt-secret
@@ -51,11 +49,11 @@ services:
     depends_on:
       - mongodb
     networks:
+      - gateway-network
       - internal-network
     volumes:
       - ./nx-ms-server-auth:/app
     restart: on-failure
-    command: yarn start:dev
 
   nx-ms-server-event:
     build:
@@ -63,7 +61,7 @@ services:
       dockerfile: Dockerfile.local
     container_name: nx-ms-server-event
     ports:
-      - :3000
+      - 3002:3000
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongodb:27017/
@@ -74,7 +72,6 @@ services:
     volumes:
       - ./nx-ms-server-event:/app
     restart: on-failure
-    command: yarn start:dev
 
 networks:
   internal-network:
