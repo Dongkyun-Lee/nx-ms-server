@@ -16,7 +16,7 @@ export class LogInterceptor implements NestInterceptor {
     const userAgent = request.get('user-agent') || '';
 
     this.logger.log(`[REQUEST] [${method}] ${request.get('host')}${originalUrl} [IP]: ${ip} [User-Agent]: ${userAgent}`);
-    this.logger.log(`[RESPONSE DATA] ${JSON.stringify(body, null, 2)}`);
+    this.logger.log(`[REQUEST DATA] ${JSON.stringify(body, null, 2)}`);
 
     return next.handle().pipe(
       tap((responseData) => { // 컨트롤러에서 반환된 값
