@@ -18,7 +18,7 @@ services:
       - "3000:3000"
     environment:
       - SERVER_GATEWAY_AUTH_PREFIX=/api/auth
-      - SERVER_GATEWAY_EVENT_PREFIX=/api/evesnt
+      - SERVER_GATEWAY_EVENT_PREFIX=/api/event
       - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
       - AUTH_SERVICE_URL=http://nx-ms-server-auth:3000
       - EVENT_SERVICE_URL=http://nx-ms-server-event:3000
@@ -44,7 +44,7 @@ services:
       - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
       - NODE_ENV=production
       - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
-      - MONGODB_URI=mongodb://mongodb:27017/
+      - MONGODB_URI=mongodb://mongodb:27017/auth_db
     depends_on:
       - mongodb
     networks:
@@ -61,7 +61,7 @@ services:
     environment:
       - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
       - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongodb:27017/
+      - MONGODB_URI=mongodb://mongodb:27017/event_db
     depends_on:
       - mongodb
     networks:
