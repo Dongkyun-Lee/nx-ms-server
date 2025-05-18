@@ -42,7 +42,7 @@ export class EventController {
   }
 
   @Roles(ROLES.ADMIN, ROLES.OPERATOR)
-  @Patch(':id')
+  @Patch('event/:id')
   async update(
     @Request() req: any,
     @Headers() headers: any,
@@ -53,8 +53,60 @@ export class EventController {
   }
 
   @Roles(ROLES.ADMIN, ROLES.OPERATOR)
-  @Delete(':id')
+  @Delete('event/:id')
   async remove(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.eventService.delete(req, req.path, headers, query);
+  }
+
+  @Roles(ROLES.OPERATOR, ROLES.ADMIN)
+  @Post('reward')
+  async createReward(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+    @Body() body: any,
+  ) {
+    return await this.eventService.post(req, req.path, body, headers, query);
+  }
+
+  @Roles(ROLES.OPERATOR, ROLES.ADMIN)
+  @Get('reward')
+  async getRewards(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.eventService.get(req, req.path, headers, query);
+  }
+
+  @Roles(ROLES.OPERATOR, ROLES.ADMIN)
+  @Get('reward/:id')
+  async getReward(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.eventService.get(req, req.path, headers, query);
+  }
+
+  @Roles(ROLES.OPERATOR, ROLES.ADMIN)
+  @Patch('reward/:id')
+  async updateReward(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+    @Body() body: any,
+  ) {
+    return await this.eventService.patch(req, req.path, body, headers, query);
+  }
+
+  @Roles(ROLES.OPERATOR, ROLES.ADMIN)
+  @Delete('reward/:id')
+  async deleteReward(
     @Request() req: any,
     @Headers() headers: any,
     @Query() query: any,
