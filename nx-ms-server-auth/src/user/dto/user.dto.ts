@@ -42,7 +42,7 @@ export class UserBaseDto {
   deletedAt: Date;
 }
 
-export class CreateUserRequestDto extends PartialType(OmitType(UserBaseDto, ['id', 'refreshToken', 'createdAt', 'updatedAt', 'roles'])) {}
+export class CreateUserRequestDto extends PartialType(OmitType(UserBaseDto, ['id', 'refreshToken', 'createdAt', 'updatedAt'])) {}
 
 export class CreateUserResponseDto extends PickType(UserBaseDto, ['id', 'nickname', 'email']) {
   static fromDocument(doc: UserDocument): CreateUserResponseDto {
