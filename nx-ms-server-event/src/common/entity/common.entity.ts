@@ -1,6 +1,7 @@
-import { Prop } from '@nestjs/mongoose';
+import { Prop, Schema } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 
+@Schema({ timestamps: true })
 export class CommonEntity {
   @ApiProperty({ description: '생성 일시' })
   @Prop()
@@ -15,6 +16,6 @@ export class CommonEntity {
   isDeleted: boolean;
 
   @ApiProperty({ description: '삭제 일시' })
-  @Prop({ default: false })
+  @Prop({ default: null })
   deletedAt: Date;
 }

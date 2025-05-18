@@ -35,10 +35,10 @@ export class UserBaseDto {
   @ApiProperty({ description: 'refresh token' })
   refreshToken: string;
 
-  @ApiProperty({ description: '사용자 삭제 여부' })
+  @ApiProperty({ description: '사용자 삭제 여부', default: false })
   isDeleted: boolean;
 
-  @ApiProperty({ description: '사용자 삭제 일시', default: false })
+  @ApiProperty({ description: '사용자 삭제 일시' })
   deletedAt: Date;
 }
 
