@@ -2,9 +2,11 @@ import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { IsArray, IsMongoId, IsNotEmpty, IsNumber, IsString, Min, ValidateNested } from 'class-validator';
 import { EventDocument } from '../entities/event.entity';
 import { Type } from 'class-transformer';
+import { CommonDto } from 'src/common/dto/common.dto';
 
 function mapEventDocToDto<T extends Partial<EventDto>>(doc: EventDocument, dto: T): T {
   dto.id = doc._id.toString();
+  dto.condition = doc.condition;
   dto.name = doc.name;
   dto.description = doc.description;
   dto.eventStartDate = doc.eventStartDate;
@@ -30,8 +32,8 @@ export class EventRewardDto {
   amount: number;
 }
 
-export class EventDto {
-  constructor(doc: EventDocument) {
+export class EventDto extends CommonDto {
+  super(doc: EventDocument) {
     this.id = doc._id.toString();
     this.name = doc.name;
     this.description = doc.description;
@@ -46,27 +48,27 @@ export class EventDto {
     this.isDeleted = doc.isDeleted;
   }
 
-  @ApiProperty({ description: '이벤트 아이디' })
-  id: string;
-
-  @ApiProperty({ description: '이벤트 이름' })
+  @ApiProperty({ description: '이벤트 이름', required: true })
   @IsNotEmpty()
   @IsString()
   name: string;
 
+  @ApiProperty({ description: '이벤트 달성 조건', required: true })
+  condition: string;
+
   @ApiProperty({ description: '이벤트 설명' })
   description?: string;
 
-  @ApiProperty({ description: '이벤트 시작일' })
+  @ApiProperty({ description: '이벤트 시작일', required: true })
   eventStartDate: Date;
 
-  @ApiProperty({ description: '이벤트 종료일' })
+  @ApiProperty({ description: '이벤트 종료일', required: true })
   eventEndDate: Date;
 
-  @ApiProperty({ description: '보상 수령 가능 시작일' })
+  @ApiProperty({ description: '보상 수령 가능 시작일', required: true })
   rewardStartDate: Date;
 
-  @ApiProperty({ description: '보상 수령 가능 종료일' })
+  @ApiProperty({ description: '보상 수령 가능 종료일', required: true })
   rewardEndDate: Date;
 
   @ApiProperty({ description: '이벤트 활성화 여부' })
@@ -80,25 +82,16 @@ export class EventDto {
   @ValidateNested({ each: true })
   @Type(() => EventRewardDto)
   eventReward: EventRewardDto[];
-
-  @ApiProperty({ description: '이벤트 생성 일시' })
-  createdAt: Date;
-
-  @ApiProperty({ description: '이벤트 수정 일시' })
-  updatedAt: Date;
-
-  @ApiProperty({ description: '이벤트 삭제 여부', default: false })
-  isDeleted: boolean;
 }
 
-export class CreateEventRequestDto extends PartialType(EventDto) {}
+export class CreateEventRequestDto extends PartialType(EventDto) { }
 
 export class CreateEventResponseDto extends PartialType(EventDto) {
   static fromDocument(doc: EventDocument): CreateEventResponseDto {
     return mapEventDocToDto(doc, new CreateEventResponseDto());
   }
 }
-export class GetEventRequestDto extends PickType(EventDto, ['id']) {}
+export class GetEventRequestDto extends PickType(EventDto, ['id']) { }
 
 export class GetEventResponseDto extends PartialType(EventDto) {
   static fromDocument(doc: EventDocument): GetEventResponseDto {
@@ -116,7 +109,7 @@ export class GetAllEventResponseDto {
   events: GetEventResponseDto[];
 }
 
-export class UpdateEventRequestDto extends PartialType(EventDto) {}
+export class UpdateEventRequestDto extends PartialType(EventDto) { }
 
 export class UpdateEventResponnseDto extends PartialType(EventDto) {
   static fromDocument(doc: EventDocument): UpdateEventResponnseDto {
@@ -124,7 +117,7 @@ export class UpdateEventResponnseDto extends PartialType(EventDto) {
   }
 }
 
-export class DeleteEventRequestDto extends PickType(EventDto, ['id']) {}
+export class DeleteEventRequestDto extends PickType(EventDto, ['id']) { }
 
 export class DeleteEventResponnseDto extends PartialType(EventDto) {
   static fromDocument(doc: EventDocument): DeleteEventResponnseDto {

@@ -7,27 +7,31 @@ export type EventDocument = Event & Document;
 
 @Schema({ timestamps: true })
 export class Event {
-  @ApiProperty({ description: '이벤트 이름' })
+  @ApiProperty({ description: '이벤트 이름', required: true })
   @Prop({ required: true, unique: true })
   name: string;
+
+  @ApiProperty({ description: '이벤트 달성 조건', required: true })
+  @Prop({ required: true })
+  condition: string;
 
   @ApiProperty({ description: '이벤트 설명' })
   @Prop()
   description?: string;
 
-  @ApiProperty({ description: '이벤트 시작일' })
+  @ApiProperty({ description: '이벤트 시작일', required: true })
   @Prop({ required: true })
   eventStartDate: Date;
 
-  @ApiProperty({ description: '이벤트 종료일' })
+  @ApiProperty({ description: '이벤트 종료일', required: true })
   @Prop({ required: true })
   eventEndDate: Date;
 
-  @ApiProperty({ description: '보상 수령 가능 시작일' })
+  @ApiProperty({ description: '보상 수령 가능 시작일', required: true })
   @Prop({ required: true })
   rewardStartDate: Date;
 
-  @ApiProperty({ description: '보상 수령 가능 종료일' })
+  @ApiProperty({ description: '보상 수령 가능 종료일', required: true })
   @Prop({ required: true })
   rewardEndDate: Date;
 
