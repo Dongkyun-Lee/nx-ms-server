@@ -20,11 +20,20 @@ export class RewardService {
   }
 
   async findOne(id: string) {
-    return GetRewardResponseDto.fromDocument(await this.rewardModel.findById(id).exec());
+    const rewardDoc = await this.rewardModel.findById(id)
+      .populate('eventIds')
+      .lean()
+      .exec();
+
+    if (!rewardDoc) return null;
+
+    return GetRewardResponseDto.fromDocument(rewardDoc as RewardDocument);
   }
 
   async update(id: string, body: UpdateRewardRequestDto): Promise<UpdateRewardResponnseDto> {
-    const updatedUser = await this.rewardModel.findByIdAndUpdate(id, body, { new: true }).lean().exec();
+    const updatedUser = await this.rewardModel.findByIdAndUpdate(id, body, { new: true }).populate('eventIds')
+      .lean()
+      .exec();
     if (!updatedUser) {
       throw new NotFoundException(`Reward with ID ${id} not found`);
     }
