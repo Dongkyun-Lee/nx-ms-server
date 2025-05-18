@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthenticatedUserInfo {
-  @ApiProperty({ example: 'abc123', description: 'ID' })
+  @ApiProperty({ example: 'abc123', description: '유저 아이디' })
   id: string;
 
   @ApiProperty({ example: 'test@test.com', description: '이메일' })

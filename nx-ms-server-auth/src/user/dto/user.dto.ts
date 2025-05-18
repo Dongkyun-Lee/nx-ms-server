@@ -2,11 +2,11 @@ import { IsString, IsEmail, MinLength, IsNotEmpty } from 'class-validator';
 import { ApiProperty, OmitType, PartialType, PickType } from '@nestjs/swagger';
 import { UserDocument } from '../entity/user.entity';
 import { ROLES } from 'src/common/constant';
+import { Types } from 'mongoose';
 
 export class UserBaseDto {
   @ApiProperty({ description: '아이디' })
-  @IsString()
-  id: string;
+  id: Types.ObjectId;
 
   @ApiProperty({ description: '닉네임' })
   @IsString()
@@ -29,11 +29,7 @@ export class UserBaseDto {
   @ApiProperty({ description: '수정일시' })
   updatedAt: Date;
 
-  @ApiProperty({
-    description: '사용자 역할',
-    isArray: true,
-    example: ROLES,
-  })
+  @ApiProperty({ description: '사용자 역할', isArray: true, example: ROLES })
   roles: string[];
 
   @ApiProperty({ description: 'refresh token' })
@@ -51,7 +47,7 @@ export class CreateUserRequestDto extends PartialType(OmitType(UserBaseDto, ['id
 export class CreateUserResponseDto extends PickType(UserBaseDto, ['id', 'nickname', 'email']) {
   static fromDocument(doc: UserDocument): CreateUserResponseDto {
     const dto = new CreateUserResponseDto();
-    dto.id = doc._id.toString();
+    dto.id = doc._id as Types.ObjectId;
     dto.nickname = doc.nickname;
     dto.email = doc.email;
     return dto;
@@ -63,7 +59,7 @@ export class UpdateUserRequestDto extends PartialType(UserBaseDto) {}
 export class UpdateUserResponseDto extends PartialType(OmitType(UserBaseDto, ['password', 'refreshToken'])) {
   static fromDocument(doc: UserDocument): UpdateUserResponseDto {
     const dto = new UpdateUserResponseDto();
-    dto.id = doc._id.toString();
+    dto.id = doc._id as Types.ObjectId;
     dto.nickname = doc.nickname;
     dto.email = doc.email;
     dto.updatedAt = doc.updatedAt;

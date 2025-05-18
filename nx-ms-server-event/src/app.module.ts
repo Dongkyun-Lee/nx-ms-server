@@ -5,6 +5,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LogInterceptor } from './common/interceptor/log/log.interceptor';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RewardModule } from './reward/reward.module';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
+    EventModule,
+    RewardModule,
   ],
   controllers: [AppController],
   providers: [

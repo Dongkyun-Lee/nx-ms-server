@@ -1,0 +1,24 @@
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class RewardService {
+  create(createRewardDto) {
+    return 'This action adds a new reward';
+  }
+
+  findAll() {
+    return `This action returns all reward`;
+  }
+
+  findOne(id: number) {
+    return `This action returns a #${id} reward`;
+  }
+
+  update(id: number, updateRewardDto) {
+    return `This action updates a #${id} reward`;
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} reward`;
+  }
+}
