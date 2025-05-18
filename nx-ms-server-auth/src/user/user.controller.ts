@@ -7,11 +7,6 @@ import { AuthenticatedUser } from 'src/common/decorator/authenticated-user.decor
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('healthCheck')
-  getUserHealth(): string {
-    return this.userService.getUserHealth();
-  }
-
   @Post()
   postUser(@Body() createDto: CreateUserRequestDto): Promise<CreateUserResponseDto> {
     return this.userService.createUser(createDto);
