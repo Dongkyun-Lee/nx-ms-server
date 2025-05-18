@@ -17,7 +17,7 @@ export class Reward extends CommonEntity {
   name: string;
 
   @ApiProperty({ description: '보상 설명' })
-  @Prop()
+  @Prop({ required: true })
   description?: string;
 
   @Prop({

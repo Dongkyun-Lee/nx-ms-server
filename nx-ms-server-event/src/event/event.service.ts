@@ -10,36 +10,40 @@ export class EventService {
   constructor(
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     private readonly rewardService: RewardService,
-  ) { }
+  ) {}
 
   async create(body: CreateEventRequestDto): Promise<CreateEventResponseDto> {
     const { rewards, rewardsIds } = body;
-    let errorMessage = null;
+    let errorMessage: string = null;
+    let result = null;
     // 보상 없이 생성하는 경우
     if (rewards && rewardsIds) {
-      throw new BadRequestException('rewards or rewardsIds required');
+      throw new BadRequestException('Rewards or rewardsIds are required');
     }
     // 등록된 보상을 연결해 생성하는 경우 등록된 보상인 지 확인
     if (rewardsIds) {
       const _rewardsIds = await this.rewardService.findAllByIds(rewardsIds);
-      if (rewards.length !== _rewardsIds.length) {
-        throw new BadRequestException('can not find rewards by rewsardsIds');
+      if (rewardsIds.length !== _rewardsIds.length) {
+        throw new BadRequestException('Can not find rewards by rewsardsIds');
       }
     }
 
     // 신규 등록된 보상이 있는 경우 body 에서 제거 후 보상 등록
     delete body['rewards'];
     const createdEvent = new this.eventModel({ ...body });
-    const newEvent = await createdEvent.save();
+    result = await createdEvent.save();
 
-    if (newEvent) {
-      const _rewards = await this.rewardService.createByList(rewards);
+    if (rewards && result) {
+      const _rewards = await this.rewardService.createByList(rewards, result._id.toString());
       if (_rewards.length !== rewards.length) {
-        errorMessage = 'some rewards are failed to create';
+        errorMessage = 'Some rewards are failed to create';
       }
+      const ids = _rewards.map((_reward) => _reward.id || _reward._id);
+
+      result = await this.eventModel.findByIdAndUpdate(result._id, { rewardsIds: ids }, { new: true });
     }
 
-    return { ...CreateEventResponseDto.fromDocument(newEvent), errorMessage };
+    return { ...CreateEventResponseDto.fromDocument(result), errorMessage };
   }
 
   async findAll(): Promise<GetAllEventResponseDto> {
@@ -61,7 +65,11 @@ export class EventService {
   }
 
   async remove(id: string): Promise<DeleteEventResponnseDto> {
-    const deletedUser = await this.eventModel.findByIdAndUpdate(id, { isDeleted: true });
+    const target = await this.findOne(id);
+    if (target.isDeleted) {
+      throw new BadRequestException(`Eventwith ID ${id} already deleted`);
+    }
+    const deletedUser = await this.eventModel.findByIdAndUpdate(id, { isDeleted: true, deletedAt: Date.now() });
     if (!deletedUser) {
       throw new NotFoundException(`Event with ID ${id} not found`);
     }

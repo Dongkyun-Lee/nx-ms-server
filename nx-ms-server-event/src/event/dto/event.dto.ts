@@ -69,7 +69,7 @@ export class CreateEventResponseDto extends PartialType(EventDto) {
     return mapEventDocToDto(doc, new CreateEventResponseDto());
   }
 }
-export class GetEventRequestDto extends PickType(EventDto, ['id']) { }
+export class GetEventRequestDto extends PickType(EventDto, ['id']) {}
 
 export class GetEventResponseDto extends PartialType(EventDto) {
   static fromDocument(doc: EventDocument): GetEventResponseDto {
@@ -87,7 +87,7 @@ export class GetAllEventResponseDto {
   events: GetEventResponseDto[];
 }
 
-export class UpdateEventRequestDto extends PartialType(OmitType(EventDto, ['id', 'updatedAt', 'createdAt'])) { }
+export class UpdateEventRequestDto extends PartialType(OmitType(EventDto, ['id', 'updatedAt', 'createdAt'])) {}
 
 export class UpdateEventResponnseDto extends PartialType(EventDto) {
   static fromDocument(doc: EventDocument): UpdateEventResponnseDto {
