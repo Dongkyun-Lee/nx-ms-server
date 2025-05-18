@@ -33,21 +33,6 @@ export class EventRewardDto {
 }
 
 export class EventDto extends CommonDto {
-  super(doc: EventDocument) {
-    this.id = doc._id.toString();
-    this.name = doc.name;
-    this.description = doc.description;
-    this.eventStartDate = doc.eventStartDate;
-    this.eventEndDate = doc.eventEndDate;
-    this.rewardStartDate = doc.rewardStartDate;
-    this.rewardEndDate = doc.rewardEndDate;
-    this.isActive = doc.isActive;
-    this.eventReward = doc.eventReward;
-    this.createdAt = doc.createdAt;
-    this.updatedAt = doc.updatedAt;
-    this.isDeleted = doc.isDeleted;
-  }
-
   @ApiProperty({ description: '이벤트 이름', required: true })
   @IsNotEmpty()
   @IsString()

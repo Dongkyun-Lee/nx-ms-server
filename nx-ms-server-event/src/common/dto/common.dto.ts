@@ -1,8 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CommonDto {
   @ApiProperty({ description: '[공통통]아이디' })
   id: string;
+
   @ApiProperty({ description: '[공통통]생성 일시' })
   createdAt: Date;
 
