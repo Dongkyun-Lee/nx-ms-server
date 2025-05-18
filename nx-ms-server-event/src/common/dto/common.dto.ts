@@ -15,4 +15,6 @@ export class CommonDto {
 
   @ApiProperty({ description: '[공통]삭제 일시', default: false })
   deleteAt: Date;
+
+  errorMessage: string;
 }

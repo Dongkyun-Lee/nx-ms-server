@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { RewardDto } from './dto/reward.dto';
 
 @Injectable()
 export class RewardService {
@@ -20,5 +21,15 @@ export class RewardService {
 
   remove(id: number) {
     return `This action removes a #${id} reward`;
+  }
+
+  // ids 배열 받아서 serch
+  findAllByIds(ids: string[]) {
+    return [];
+  }
+
+  // Reward 객체 받아서 일괄 create
+  createByList(rewards: Partial<RewardDto>[]) {
+    return [];
   }
 }

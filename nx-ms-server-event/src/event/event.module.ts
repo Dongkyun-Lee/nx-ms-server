@@ -4,6 +4,7 @@ import { EventController } from './event.controller';
 import { Event, EventSchema } from './entities/event.entity';
 import { UserEventParticipation, UserEventParticipationSchema } from './entities/user-event-participation.entity';
 import { MongooseModule } from '@nestjs/mongoose';
+import { RewardService } from 'src/reward/reward.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     ]),
   ],
   controllers: [EventController],
-  providers: [EventService],
+  providers: [EventService, RewardService],
 })
 export class EventModule {}
