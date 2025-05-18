@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
+import { PARTICIPATION_STATUS } from 'src/common/type';
 
 export type UserEventParticipationDocument = UserEventParticipation & Document;
 
@@ -22,13 +23,9 @@ export class UserEventParticipation {
   @Prop()
   rewardClaimedAt?: Date;
 
-  @ApiProperty({ description: '추가 참여 관련 데이터 (예: 참여 방법, 점수 등)' })
-  @Prop()
-  participationData?: any;
-
-  @ApiProperty({ description: '참여 상태, 예: 참여 취소 등 처리용' })
-  @Prop()
-  isActive: boolean;
+  @ApiProperty({ description: '유저 이벤트 참여 상태' })
+  @Prop({ enum: PARTICIPATION_STATUS, default: PARTICIPATION_STATUS.PENDING })
+  status: PARTICIPATION_STATUS;
 }
 
 export const UserEventParticipationSchema = SchemaFactory.createForClass(UserEventParticipation);
