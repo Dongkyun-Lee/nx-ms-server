@@ -41,7 +41,7 @@ export class Event extends CommonEntity {
 
   @ApiProperty({ description: '보상 목록 (Reward ObjectId 배열)' })
   @Prop({ type: [Types.ObjectId], ref: 'Reward', default: [] })
-  rewardsIds: Types.ObjectId[];
+  rewardIds: Types.ObjectId[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

@@ -31,7 +31,7 @@ export class RewardController {
   }
 
   @ApiOperation({ summary: '보상 수정' })
-  @ApiResponse({ status: 200, description: '수정된 보상 반환', type: PartialType(RewardDto) })
+  @ApiResponse({ status: 200, description: '수정된 보상 반환', type: UpdateRewardResponnseDto })
   @ApiParam({ name: 'id', description: '타깃 보상 id', type: String })
   @ApiBody({ type: UpdateRewardRequestDto })
   @Patch(':id')
@@ -41,7 +41,7 @@ export class RewardController {
 
   @ApiOperation({ summary: '보상 삭제' })
   @ApiParam({ name: 'id', description: '타깃 보상 id', type: String })
-  @ApiResponse({ status: 200, description: '삭제된 보상 반환', type: PartialType(RewardDto) })
+  @ApiResponse({ status: 200, description: '삭제된 보상 반환', type: DeleteRewardResponnseDto })
   @Delete(':id')
   remove(@Param('id') id: string): Promise<DeleteRewardResponnseDto> {
     return this.rewardService.remove(id);

@@ -15,7 +15,7 @@ function mapEventDocToDto<T extends Partial<EventDto>>(doc: EventDocument, dto: 
   dto.rewardStartDate = doc.rewardStartDate;
   dto.rewardEndDate = doc.rewardEndDate;
   dto.isActive = doc.isActive;
-  dto.rewardsIds = doc.rewardsIds.map((id) => id.toString());
+  dto.rewardIds = doc.rewardIds.map((id) => id.toString());
   dto.createdAt = doc.createdAt;
   dto.updatedAt = doc.updatedAt;
   dto.isDeleted = doc.isDeleted;
@@ -55,7 +55,7 @@ export class EventDto extends CommonDto {
   })
   @IsArray()
   @ValidateNested({ each: true })
-  rewardsIds: string[];
+  rewardIds: string[];
 
   @ApiProperty({ type: [CreateRewardRequestDto], description: '보상 목록' })
   @IsArray()

@@ -13,17 +13,17 @@ export class EventService {
   ) {}
 
   async create(body: CreateEventRequestDto): Promise<CreateEventResponseDto> {
-    const { rewards, rewardsIds } = body;
+    const { rewards, rewardIds } = body;
     let errorMessage: string = null;
     let result = null;
     // 보상 없이 생성하는 경우
-    if (rewards && rewardsIds) {
-      throw new BadRequestException('Rewards or rewardsIds are required');
+    if (rewards && rewardIds) {
+      throw new BadRequestException('Rewards or rewardIds are required');
     }
     // 등록된 보상을 연결해 생성하는 경우 등록된 보상인 지 확인
-    if (rewardsIds) {
-      const _rewardsIds = await this.rewardService.findAllByIds(rewardsIds);
-      if (rewardsIds.length !== _rewardsIds.length) {
+    if (rewardIds) {
+      const _rewardIds = await this.rewardService.findAllByIds(rewardIds);
+      if (rewardIds.length !== _rewardIds.length) {
         throw new BadRequestException('Can not find rewards by rewsardsIds');
       }
     }
@@ -40,7 +40,7 @@ export class EventService {
       }
       const ids = _rewards.map((_reward) => _reward.id || _reward._id);
 
-      result = await this.eventModel.findByIdAndUpdate(result._id, { rewardsIds: ids }, { new: true });
+      result = await this.eventModel.findByIdAndUpdate(result._id, { rewardIds: ids }, { new: true });
     }
 
     return { ...CreateEventResponseDto.fromDocument(result), errorMessage };
