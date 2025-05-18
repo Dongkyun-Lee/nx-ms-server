@@ -2,9 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './entity/user.entity';
-import { CreateUserRequestDto, CreateUserResponseDto, UpdateUserRequestDto } from './dto/user.dto';
+import { CreateUserRequestDto, CreateUserResponseDto, DeleteUserRequestDto, UpdateUserRequestDto, UpdateUserResponseDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { LoginRequestDto } from 'src/auth/dto/auth.dto';
 
 @Injectable()
 export class UserService {
@@ -42,7 +41,7 @@ export class UserService {
     return null;
   }
 
-  async updateUser(email: string, updateUserDto: UpdateUserRequestDto): Promise<User> {
+  async updateUser(email: string, updateUserDto: UpdateUserRequestDto): Promise<UpdateUserResponseDto> {
     const updatedUser = await this.userModel.findOneAndUpdate({ email }, updateUserDto, { new: true }).exec();
     if (!updatedUser) {
       throw new NotFoundException(`User with Email "${email}" not found`);
@@ -50,8 +49,9 @@ export class UserService {
     return updatedUser;
   }
 
-  async deleteUser(email: string): Promise<User> {
-    const deletedUser = await this.userModel.findOneAndDelete({ email }).exec();
+  async deleteUser(req: DeleteUserRequestDto): Promise<DeleteUserResponseDto> {
+    const { email } = req;
+    const deletedUser = await this.userModel.findOneAndUpdate({ email }, { isDeleted: true, deletedAt: Date.now }).exec();
     if (!deletedUser) {
       throw new NotFoundException(`User with EMAIL "${email}" not found`);
     }

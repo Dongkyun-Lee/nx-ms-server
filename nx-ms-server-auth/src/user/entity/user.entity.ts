@@ -1,30 +1,37 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { ROLES } from 'src/common/constant';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
   @Prop({ required: true, unique: true })
   nickname: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true, unique: true, match: /^\S+@\S+\.\S+$/ })
   email: string;
 
   @Prop({ required: true })
-  password?: string;
+  password: string;
 
-  @Prop({ default: ['USER'] })
+  @Prop({ type: [String], enum: ROLES, default: ROLES.ANONYMOUS })
   roles: string[];
 
   @Prop({ default: Date.now })
-  createdAt: Date;
+  createdAt?: Date;
 
   @Prop({ default: Date.now })
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @Prop()
-  refreshToken: string;
+  refreshToken?: string;
+
+  @Prop({ default: false })
+  isDeleted: boolean;
+
+  @Prop({ default: null })
+  deletedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
