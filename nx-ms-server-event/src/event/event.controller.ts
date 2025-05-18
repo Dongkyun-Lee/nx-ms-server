@@ -18,15 +18,15 @@ export class EventController {
   }
 
   @Get()
-  @ApiOperation({ summary: '이벤트 생성'})
-  @ApiResponse({ status: 200, description: '이벤트 전체 목록 반환', type: GetAllEventResponseDTO })
+  @ApiOperation({ summary: '이벤트 다건 조회' })
+  @ApiResponse({ status: 200, description: '이벤트 목록 반환', type: GetAllEventResponseDTO })
   findAll(@AuthenticatedUser() authUser: AuthenticatedUserInfo) {
     return this.eventService.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: '이벤트 생성'})
-  @ApiResponse({ status: 200, description: '이벤트 반환', type: GetEventResponseDTO })
+  @ApiOperation({ summary: '이벤트 단건 조회' })
+  @ApiResponse({ status: 200, description: '이벤트 단건 반환', type: GetEventResponseDTO })
   findOne(@Param('id') id: string) {
     return this.eventService.findOne(+id);
   }

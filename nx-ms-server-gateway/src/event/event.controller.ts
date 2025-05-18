@@ -1,13 +1,64 @@
-import { Controller, Get, Headers, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Patch, Post, Query, Request } from '@nestjs/common';
+import { ALL_ROLES_EXCEPT_ANONYMOUS, ROLES } from 'src/common/constants';
+import { Roles } from 'src/common/decorator/roles.decorator';
+import { Public } from 'src/common/decorator/public.decorator';
 import { EventService } from './event.service';
-// import { JwtAuthGuard } from '../../auth/auth.guard';
-// import { RolesGuard } from '../../auth/roles.guard';
-// import { Roles } from '../../auth/roles.decorator';
-import { GetHelloResponse } from './types/event.interface';
-import { Request } from 'express';
 
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
+  @Roles(ROLES.OPERATOR, ROLES.ADMIN)
+  @Post('event')
+  async createEvent(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+    @Body() body: any,
+  ) {
+    return await this.eventService.post(req, req.path, body, headers, query);
+  }
+
+  @Public()
+  @Roles(ROLES.ANONYMOUS)
+  @Get('event')
+  async findAll(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.eventService.get(req, req.path, headers, query);
+  }
+
+  @Public()
+  @Roles(ROLES.ANONYMOUS)
+  @Get('event/:id')
+  async findOne(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.eventService.get(req, req.path, headers, query);
+  }
+
+  @Roles(ROLES.ADMIN, ROLES.OPERATOR)
+  @Patch(':id')
+  async update(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+    @Body() body: any,
+  ) {
+    return await this.eventService.patch(req, req.path, body, headers, query);
+  }
+
+  @Roles(ROLES.ADMIN, ROLES.OPERATOR)
+  @Delete(':id')
+  async remove(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.eventService.delete(req, req.path, headers, query);
+  }
 }

@@ -10,7 +10,7 @@ export class HttpProxyService {
   private mergeHeadersWithUser(originalHeaders: any, user?: any): any {
     return {
       'Content-Type': originalHeaders['content-type'],
-      Authorization: originalHeaders.authrorization,
+      Authorization: originalHeaders.authorization,
       ...(user && {
         'ms-user-id': user.sub,
         'ms-user-email': user.email,
@@ -59,5 +59,10 @@ export class HttpProxyService {
   async proxyDelete<T>(url: string, headers?: any, params?: any, user?: any): Promise<Observable<AxiosResponse<T>>> {
     const mergedHeaders = this.mergeHeadersWithUser(headers || {}, user);
     return await this.httpService.delete<T>(url, { headers: mergedHeaders, params });
+  }
+
+  async proxyPatch<T>(url: string, body?: any, headers?: any, params?: any, user?: any): Promise<Observable<AxiosResponse<T>>> {
+    const mergedHeaders = this.mergeHeadersWithUser(headers || {}, user);
+    return await this.httpService.patch<T>(url, body, { headers: mergedHeaders, params });
   }
 }
