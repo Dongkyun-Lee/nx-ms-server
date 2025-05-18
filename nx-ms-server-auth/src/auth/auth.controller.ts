@@ -2,7 +2,8 @@ import { Controller, Post, Body, Request, UseGuards, Get, NotFoundException } fr
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.gurad';
 import { UserService } from '../user/user.service';
-import { LoginResponsetDto, RefreshRequestDto, RefreshResponseDto } from './dto/auth.dto';
+import { LoginRequestDto, LoginResponsetDto, RefreshRequestDto, RefreshResponseDto } from './dto/auth.dto';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -11,6 +12,9 @@ export class AuthController {
     private readonly usersService: UserService,
   ) {}
 
+  @ApiOperation({ summary: '이벤트 생성'})
+  @ApiBody({ type: LoginRequestDto })
+  @ApiResponse({ status: 201, description: '로그인 성공', type: LoginResponsetDto })
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req: any): Promise<LoginResponsetDto> | null {

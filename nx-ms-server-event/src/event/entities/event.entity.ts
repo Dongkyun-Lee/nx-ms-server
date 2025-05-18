@@ -1,13 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
+import { EventRewardDto } from '../dto/event.dto';
 
 export type EventDocument = Event & Document;
 
 @Schema({ timestamps: true })
 export class Event {
   @ApiProperty({ description: '이벤트 이름' })
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   name: string;
 
   @ApiProperty({ description: '이벤트 설명' })
@@ -35,19 +36,20 @@ export class Event {
   isActive: boolean;
 
   @ApiProperty({ description: '보상 목록' })
-  @Prop({
-    type: [
-      {
-        reward: { type: Types.ObjectId, ref: 'Reward', required: true },
-        amount: { type: Number, required: true },
-      },
-    ],
-    default: [],
-  })
-  eventReward: {
-    reward: Types.ObjectId;
-    amount: number;
-  }[];
+  @Prop({ default: [] })
+  eventReward: EventRewardDto[];
+
+  @ApiProperty({ description: '이벤트 삭제 여부' })
+  @Prop({ default: false })
+  isDeleted: boolean;
+
+  @ApiProperty({ description: '이벤트 생성 일시' })
+  @Prop()
+  createdAt: Date;
+
+  @ApiProperty({ description: '이벤트 수정 일시' })
+  @Prop()
+  updatedAt: Date;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

@@ -38,7 +38,7 @@ export class UserBaseDto {
   @ApiProperty({ description: '사용자 삭제 여부' })
   isDeleted: boolean;
 
-  @ApiProperty({ description: '사용자 삭제 일시' })
+  @ApiProperty({ description: '사용자 삭제 일시', default: false })
   deletedAt: Date;
 }
 
