@@ -1,7 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { EventService } from './event.service';
-import { CreateEventDto } from './dto/create-event.dto';
-import { UpdateEventDto } from './dto/update-event.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { CreateEventRequestDto, CreateEventResponseDto, GetEventRequestDTO, GetAllEventResponseDTO, GetEventResponseDTO } from './dto/event.dto';
 import { AuthenticatedUser } from 'src/common/decorator/authenticated-user.decorator';
@@ -15,7 +13,7 @@ export class EventController {
   @ApiOperation({ summary: '이벤트 생성'})
   @ApiBody({ type: CreateEventRequestDto })
   @ApiResponse({ status: 201, description: '이벤트가 생성 성공', type: CreateEventResponseDto })
-  create(@Body() createEventDto: CreateEventDto) {
+  create(@Body() createEventDto) {
     return this.eventService.create(createEventDto);
   }
 
@@ -34,7 +32,7 @@ export class EventController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
+  update(@Param('id') id: string, @Body() updateEventDto) {
     return this.eventService.update(+id, updateEventDto);
   }
 
