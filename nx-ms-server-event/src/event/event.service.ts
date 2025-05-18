@@ -1,5 +1,5 @@
-import { ExceptionFilter, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateEventRequestDto, CreateEventResponseDto, DeleteEventRequestDto, DeleteEventResponnseDto, GetAllEventResponseDto, GetEventRequestDto, GetEventResponseDto, UpdateEventRequestDto, UpdateEventResponnseDto } from './dto/event.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateEventRequestDto, CreateEventResponseDto, DeleteEventResponnseDto, GetAllEventResponseDto, GetEventResponseDto, UpdateEventRequestDto, UpdateEventResponnseDto } from './dto/event.dto';
 import { Model } from 'mongoose';
 import { Event, EventDocument } from './entities/event.entity';
 import { InjectModel } from '@nestjs/mongoose';
@@ -19,23 +19,22 @@ export class EventService {
     return new GetAllEventResponseDto(dtoEvents);
   }
 
-  async findOne(param: GetEventRequestDto): Promise<GetEventResponseDto> {
-    const id = param.id;
+  async findOne(id: string): Promise<GetEventResponseDto> {
     return GetEventResponseDto.fromDocument(await this.eventModel.findById(id).exec());
   }
 
-  async update(body: UpdateEventRequestDto): Promise<UpdateEventResponnseDto> {
-    const updatedUser = await this.eventModel.findByIdAndUpdate(body.id, body, { new: true }).exec();
+  async update(id: string, body: UpdateEventRequestDto): Promise<UpdateEventResponnseDto> {
+    const updatedUser = await this.eventModel.findByIdAndUpdate(id, body, { new: true }).exec();
     if (!updatedUser) {
-      throw new NotFoundException(`Event with ID ${body.id} not found`);
+      throw new NotFoundException(`Event with ID ${id} not found`);
     }
     return UpdateEventResponnseDto.fromDocument(updatedUser);
   }
 
-  async remove(param: DeleteEventRequestDto): Promise<DeleteEventResponnseDto> {
-    const deletedUser = await this.eventModel.findByIdAndUpdate(param.id, { isDeleted: true });
+  async remove(id: string): Promise<DeleteEventResponnseDto> {
+    const deletedUser = await this.eventModel.findByIdAndUpdate(id, { isDeleted: true });
     if (!deletedUser) {
-      throw new NotFoundException(`Event with ID ${param.id} not found`);
+      throw new NotFoundException(`Event with ID ${id} not found`);
     }
     return DeleteEventResponnseDto.fromDocument(deletedUser);
   }

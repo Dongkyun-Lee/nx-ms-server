@@ -1,8 +1,9 @@
-import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsArray, IsMongoId, IsNotEmpty, IsNumber, IsString, Min, ValidateNested } from 'class-validator';
+import { ApiProperty, OmitType, PartialType, PickType } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { EventDocument } from '../entities/event.entity';
 import { Type } from 'class-transformer';
 import { CommonDto } from 'src/common/dto/common.dto';
+import { CreateRewardRequestDto } from 'src/reward/dto/reward.dto';
 
 function mapEventDocToDto<T extends Partial<EventDto>>(doc: EventDocument, dto: T): T {
   dto.id = doc._id.toString();
@@ -14,22 +15,11 @@ function mapEventDocToDto<T extends Partial<EventDto>>(doc: EventDocument, dto: 
   dto.rewardStartDate = doc.rewardStartDate;
   dto.rewardEndDate = doc.rewardEndDate;
   dto.isActive = doc.isActive;
-  dto.eventReward = doc.eventReward;
+  dto.rewardsIds = doc.rewardsIds.map((id) => id.toString());
   dto.createdAt = doc.createdAt;
   dto.updatedAt = doc.updatedAt;
   dto.isDeleted = doc.isDeleted;
   return dto;
-}
-
-export class EventRewardDto {
-  @ApiProperty({ description: '보상 아이디', example: '6647e6ff4a4b00293a72cd56' })
-  @IsMongoId()
-  reward: string;
-
-  @ApiProperty({ description: '보상 개수', example: 1 })
-  @IsNumber()
-  @Min(1)
-  amount: number;
 }
 
 export class EventDto extends CommonDto {
@@ -60,16 +50,19 @@ export class EventDto extends CommonDto {
   isActive: boolean;
 
   @ApiProperty({
-    type: [EventRewardDto],
-    description: '보상 목록',
+    type: [String],
+    description: '보상 목록 아이디 리스트',
   })
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => EventRewardDto)
-  eventReward: EventRewardDto[];
+  rewardsIds: string[];
+
+  @ApiProperty({ type: [CreateRewardRequestDto], description: '보상 목록' })
+  @IsArray()
+  rewards: CreateRewardRequestDto[];
 }
 
-export class CreateEventRequestDto extends PartialType(EventDto) { }
+export class CreateEventRequestDto extends PartialType(OmitType(EventDto, ['id', 'createdAt', 'deleteAt', 'isDeleted'] )) { }
 
 export class CreateEventResponseDto extends PartialType(EventDto) {
   static fromDocument(doc: EventDocument): CreateEventResponseDto {
@@ -94,7 +87,7 @@ export class GetAllEventResponseDto {
   events: GetEventResponseDto[];
 }
 
-export class UpdateEventRequestDto extends PartialType(EventDto) { }
+export class UpdateEventRequestDto extends PartialType(OmitType(EventDto, ['id', 'updatedAt', 'createdAt'])) { }
 
 export class UpdateEventResponnseDto extends PartialType(EventDto) {
   static fromDocument(doc: EventDocument): UpdateEventResponnseDto {

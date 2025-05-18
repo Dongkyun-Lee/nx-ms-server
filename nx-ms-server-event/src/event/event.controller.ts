@@ -28,23 +28,24 @@ export class EventController {
   @ApiParam({ name: 'id', description: '타깃 이벤트 id', type: String })
   @ApiResponse({ status: 200, description: '이벤트 단건 반환', type: GetEventResponseDto })
   @Get(':id')
-  findOne(@Param() param: GetEventRequestDto): Promise<GetEventResponseDto> {
-    return this.eventService.findOne(param);
+  findOne(@Param('id') id: string): Promise<GetEventResponseDto> {
+    return this.eventService.findOne(id);
   }
 
   @ApiOperation({ summary: '이벤트 수정' })
   @ApiParam({ name: 'id', description: '타깃 이벤트 id', type: String })
+  @ApiBody({ type: UpdateEventRequestDto })
   @ApiResponse({ status: 200, description: '수정된 이벤트 반환', type: UpdateEventResponnseDto  })
   @Patch(':id')
-  update(@AuthenticatedUser() authUser, @Param() param: UpdateEventRequestDto, @Body() body: UpdateEventRequestDto): Promise<UpdateEventResponnseDto> {
-    return this.eventService.update(body);
+  update(@AuthenticatedUser() authUser, @Param('id') id: string, @Body() body: UpdateEventRequestDto): Promise<UpdateEventResponnseDto> {
+    return this.eventService.update(id, body);
   }
 
   @ApiOperation({ summary: '이벤트 삭제' })
   @ApiParam({ name: 'id', description: '타깃 이벤트 id', type: String })
   @ApiResponse({ status: 200, description: '삭제된 이벤트 반환', type: DeleteEventResponnseDto })
   @Delete(':id')
-  remove(@AuthenticatedUser() authUser, @Param() param: DeleteEventRequestDto): Promise<DeleteEventResponnseDto> {
-    return this.eventService.remove(param);
+  remove(@AuthenticatedUser() authUser, @Param('id') id: string): Promise<DeleteEventResponnseDto> {
+    return this.eventService.remove(id);
   }
 }

@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Document } from 'mongoose';
-import { EventRewardDto } from '../dto/event.dto';
+import { Document, Types } from 'mongoose';
 import { CommonEntity } from 'src/common/entity/common.entity';
 
 export type EventDocument = Event & Document;
@@ -40,9 +39,9 @@ export class Event extends CommonEntity {
   @Prop({ default: true })
   isActive: boolean;
 
-  @ApiProperty({ description: '보상 목록' })
-  @Prop({ default: [] })
-  eventReward: EventRewardDto[];
+  @ApiProperty({ description: '보상 목록 (Reward ObjectId 배열)' })
+  @Prop({ type: [Types.ObjectId], ref: 'Reward', default: [] })
+  rewardsIds: Types.ObjectId[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
