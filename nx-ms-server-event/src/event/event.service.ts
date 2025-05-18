@@ -53,11 +53,21 @@ export class EventService {
   }
 
   async findOne(id: string): Promise<GetEventResponseDto> {
-    return GetEventResponseDto.fromDocument(await this.eventModel.findById(id).exec());
+    const eventDoc = await this.eventModel.findById(id)
+      .populate('rewardIds')
+      .lean()
+      .exec();
+
+    if (!eventDoc) return null;
+
+    return GetEventResponseDto.fromDocument(eventDoc);
   }
 
   async update(id: string, body: UpdateEventRequestDto): Promise<UpdateEventResponnseDto> {
-    const updatedUser = await this.eventModel.findByIdAndUpdate(id, body, { new: true }).exec();
+    const updatedUser = await this.eventModel.findByIdAndUpdate(id, body, { new: true })
+      .populate('rewardIds')
+      .lean()
+      .exec();
     if (!updatedUser) {
       throw new NotFoundException(`Event with ID ${id} not found`);
     }

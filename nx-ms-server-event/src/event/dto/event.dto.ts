@@ -15,10 +15,20 @@ function mapEventDocToDto<T extends Partial<EventDto>>(doc: EventDocument, dto: 
   dto.rewardStartDate = doc.rewardStartDate;
   dto.rewardEndDate = doc.rewardEndDate;
   dto.isActive = doc.isActive;
-  dto.rewardIds = doc.rewardIds.map((id) => id.toString());
   dto.createdAt = doc.createdAt;
   dto.updatedAt = doc.updatedAt;
   dto.isDeleted = doc.isDeleted;
+  if (doc.rewardIds && doc.rewardIds.length > 0) {
+    if (typeof doc.rewardIds[0] === 'object' && '_id' in doc.rewardIds[0]) {
+      dto.rewards = (doc.rewardIds as any[]).map((e) => ({
+        id: e._id.toString(),
+        name: e.name,
+      }));
+    } else {
+      dto.rewardIds = (doc.rewardIds as any[]).map((id) => id.toString());
+      dto.rewards = [];
+    }
+  }
   return dto;
 }
 

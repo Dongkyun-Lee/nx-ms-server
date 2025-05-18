@@ -27,7 +27,7 @@ export class RewardService {
 
     if (!rewardDoc) return null;
 
-    return GetRewardResponseDto.fromDocument(rewardDoc as RewardDocument);
+    return GetRewardResponseDto.fromDocument(rewardDoc);
   }
 
   async update(id: string, body: UpdateRewardRequestDto): Promise<UpdateRewardResponnseDto> {
