@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
+import { CommonEntity } from 'src/common/entity/common.entity';
 import { PARTICIPATION_STATUS } from 'src/common/type';
 
-export type UserEventParticipationDocument = UserEventParticipation & Document;
+export type RewardClaimDocument = RewardClaim & Document;
 
 @Schema({ timestamps: true })
-export class UserEventParticipation {
+export class RewardClaim extends CommonEntity {
   @ApiProperty({ description: '참여한 유저 아이디' })
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
@@ -28,4 +29,4 @@ export class UserEventParticipation {
   status: PARTICIPATION_STATUS;
 }
 
-export const UserEventParticipationSchema = SchemaFactory.createForClass(UserEventParticipation);
+export const RewardClaimSchema = SchemaFactory.createForClass(RewardClaim);
