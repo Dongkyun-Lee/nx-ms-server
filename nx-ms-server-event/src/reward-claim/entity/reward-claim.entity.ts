@@ -2,31 +2,34 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types } from 'mongoose';
 import { CommonEntity } from 'src/common/entity/common.entity';
-import { PARTICIPATION_STATUS } from 'src/common/type';
+import { CLAIM_STATUS } from 'src/common/type';
 
 export type RewardClaimDocument = RewardClaim & Document;
-
 @Schema({ timestamps: true })
 export class RewardClaim extends CommonEntity {
-  @ApiProperty({ description: '참여한 유저 아이디' })
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @ApiProperty({ description: '참여한 유저 아이디', type: String })
+  @Prop({ type: Types.ObjectId, required: true })
   userId: Types.ObjectId;
 
-  @ApiProperty({ description: '참여한 이벤트 아이디' })
+  @ApiProperty({ description: '참여한 이벤트 아이디', type: String })
   @Prop({ type: Types.ObjectId, ref: 'Event', required: true })
   eventId: Types.ObjectId;
 
-  @ApiProperty({ description: '보상 수령 여부' })
-  @Prop({ default: false })
-  rewardClaimed: boolean;
+  @ApiProperty({ description: '보상 아이디 목록', type: [String] })
+  @Prop({ type: [Types.ObjectId], ref: 'Reward', required: true })
+  rewardIds: Types.ObjectId[];
 
-  @ApiProperty({ description: '보상 수령 시간 (선택적)' })
-  @Prop()
+  @ApiProperty({ description: '보상 수령 시간', type: Date, required: false })
+  @Prop({ default: null })
   rewardClaimedAt?: Date;
 
-  @ApiProperty({ description: '유저 이벤트 참여 상태' })
-  @Prop({ enum: PARTICIPATION_STATUS, default: PARTICIPATION_STATUS.PENDING })
-  status: PARTICIPATION_STATUS;
+  @ApiProperty({
+    description: '유저 이벤트 참여 상태',
+    enum: CLAIM_STATUS,
+    enumName: 'CLAIM_STATUS',
+  })
+  @Prop({ enum: CLAIM_STATUS, default: CLAIM_STATUS.PENDING })
+  status: CLAIM_STATUS;
 }
 
 export const RewardClaimSchema = SchemaFactory.createForClass(RewardClaim);

@@ -1,4 +1,4 @@
-export enum PARTICIPATION_STATUS {
+export enum CLAIM_STATUS {
   PENDING = 'PENDING', // 진행중
   QUALIFIED = 'QUALIFIED', // 이벤트 완료 && 보상 요청 x
   REQUESTED = 'REQUESTED', // 보상 요청
