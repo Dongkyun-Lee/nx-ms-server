@@ -5,7 +5,10 @@ import { AuthenticatedUser, Roles } from 'src/common/decorator';
 import { UserHeaders } from 'src/common/type/user-headers.interface';
 import { RewardClaimService } from './reward-claim.service';
 import { AuthenticatedUserInfo } from 'src/common/type';
-import { GetAllLatestClaimsQueryDto } from './dto/reward-claim.dto';
+import {
+  GetAllLatestClaimsQueryDto,
+  RequestClaimRequestDto,
+} from './dto/reward-claim.dto';
 
 @ApiTags('RewardClaim')
 @Controller('claim')
@@ -21,7 +24,10 @@ export class RewardClaimController {
     summary: '[유저] 보상 요청',
     description: '이벤트에 대한 보상을 요청합니다.',
   })
-  @ApiBody({ description: '보상 요청에 필요한 데이터', type: Object })
+  @ApiBody({
+    description: '보상 요청에 필요한 데이터',
+    type: RequestClaimRequestDto,
+  })
   async requestClaim(
     @Body() body: any,
     @AuthenticatedUser() user: AuthenticatedUserInfo,
@@ -40,7 +46,6 @@ export class RewardClaimController {
     description: '유저 본인의 전체 보상 요청 이력을 조회',
   })
   async getMyClaims(@AuthenticatedUser() user: AuthenticatedUserInfo) {
-    console.log('user', user);
     return this.rewardClaimService.getMyClaims(user.id);
   }
 

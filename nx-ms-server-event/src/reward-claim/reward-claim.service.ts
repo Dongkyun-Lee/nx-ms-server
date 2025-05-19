@@ -162,9 +162,9 @@ export class RewardClaimService {
 
   // userId-eventId 로 그룹핑해서 최신 데이터만 출력
   async getMyClaims(userId: string): Promise<GetMyClaimsResponseDto> {
-    const pipeline = [
+    const pipeline: PipelineStage[] = [
       { $match: { userId } },
-      { $sort: { updatedAt: -1 } } as const,
+      { $sort: { updatedAt: -1 } },
       {
         $group: {
           _id: { userId: '$userId', eventId: '$eventId' },
@@ -172,6 +172,7 @@ export class RewardClaimService {
         },
       },
       { $replaceRoot: { newRoot: '$doc' } },
+      { $sort: { updatedAt: -1 } },
     ];
 
     const result = await this.rewardClaimModel.aggregate(pipeline).exec();
@@ -214,7 +215,6 @@ export class RewardClaimService {
     query: GetAllLatestClaimsQueryDto,
   ): Promise<GetAllLatestClaimsDto> {
     const match: any = {};
-    console.log('query', query);
 
     // auth server 요청 userEmail -> userId
     if (query.userEmail) {
@@ -255,7 +255,6 @@ export class RewardClaimService {
       match.rewardClaimedAt = claimedAt;
     }
 
-    console.log('match', match);
     const pipeline: PipelineStage[] = [
       { $match: match },
       { $sort: { updatedAt: -1 } },
