@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { EventModule } from './event/event.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
@@ -14,7 +12,7 @@ import { JwtAuthGuard } from './common/guard/jwt-auth.guard';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ 
+    ConfigModule.forRoot({
       envFilePath: ['.env.local', '.env'],
       isGlobal: true,
     }),
@@ -31,9 +29,7 @@ import { JwtAuthGuard } from './common/guard/jwt-auth.guard';
       inject: [ConfigService],
     }),
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     {
       provide: APP_INTERCEPTOR,
       useClass: LogInterceptor,

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, PipelineStage, Types } from 'mongoose';
+import { Model, PipelineStage } from 'mongoose';
 import { EventService } from 'src/event/event.service';
 import { RewardService } from 'src/reward/reward.service';
 import { RewardClaim, RewardClaimDocument } from './entity/reward-claim.entity';
@@ -233,14 +233,13 @@ export class RewardClaimService {
     }
 
     if (query.eventName) {
-      try {
-        const event = await this.eventService.findIdByName(query.eventName);
-        match.eventId = event._id.toString();
-      } catch (error) {
+      const event = await this.eventService.findIdByName(query.eventName);
+      if (!event) {
         throw new BadRequestException(
           `Failed to find Event Id with email ${query.eventName}`,
         );
       }
+      match.eventId = event._id.toString();
     }
 
     if (query.status && query.status.length > 0) {

@@ -7,9 +7,9 @@ services:
     ports:
       - ":27017"
     volumes:
-      - mongodb_data:/data/db
+      - ./mongodb_data:/data/db
     networks:
-      - app-network
+      - internal-network
 
   nx-ms-server-gateway:
     build: ./nx-ms-server-gateway
@@ -23,14 +23,14 @@ services:
       - AUTH_SERVICE_URL=http://nx-ms-server-auth:3000
       - EVENT_SERVICE_URL=http://nx-ms-server-event:3000
       - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongodb:27017/
       - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
     depends_on:
       - mongodb
       - nx-ms-server-auth
       - nx-ms-server-event
     networks:
-      - app-network
+      - gateway-network
+      - internal-network
     restart: on-failure
 
   nx-ms-server-auth:
@@ -39,16 +39,18 @@ services:
       dockerfile: Dockerfile
     container_name: nx-ms-server-auth
     ports:
-      - ":3000"
+      - :3000
     environment:
       - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
+      - AUTH_SERVICE_URL=http://nx-ms-server-auth:3000
+      - EVENT_SERVICE_URL=http://nx-ms-server-event:3000
       - NODE_ENV=production
       - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
       - MONGODB_URI=mongodb://mongodb:27017/auth_db
     depends_on:
       - mongodb
     networks:
-      - app-network
+      - internal-network
     restart: on-failure
 
   nx-ms-server-event:
@@ -57,20 +59,22 @@ services:
       dockerfile: Dockerfile
     container_name: nx-ms-server-event
     ports:
-      - ":3000"
+      - :3000
     environment:
       - GATEWAY_SERVICE_URL=http://nx-ms-server-gateway:3000
+      - AUTH_SERVICE_URL=http://nx-ms-server-auth:3000
+      - EVENT_SERVICE_URL=http://nx-ms-server-event:3000
       - NODE_ENV=production
       - MONGODB_URI=mongodb://mongodb:27017/event_db
     depends_on:
       - mongodb
     networks:
-      - app-network
+      - internal-network
     restart: on-failure
 
 networks:
-  app-network:
+  internal-network:
     driver: bridge
-
-volumes:
-  mongodb_data: 
+    internal: true
+  gateway-network:
+    driver: bridge

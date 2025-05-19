@@ -37,7 +37,6 @@ export class RewardClaimDto extends CommonDto {
   }
 }
 export class RequestClaimRequestDto {
-  userId: string;
   eventId: string;
 }
 export class RequestClaimResponseDto extends PartialType(RewardClaimDto) {
