@@ -2,11 +2,10 @@ import { IsString, IsEmail, MinLength, IsNotEmpty } from 'class-validator';
 import { ApiProperty, OmitType, PartialType, PickType } from '@nestjs/swagger';
 import { UserDocument } from '../entity/user.entity';
 import { ROLES } from 'src/common/constant';
-import { Types } from 'mongoose';
 
 export class UserBaseDto {
   @ApiProperty({ description: '아이디' })
-  id: Types.ObjectId;
+  id: string;
 
   @ApiProperty({ description: '닉네임' })
   @IsString()
@@ -40,8 +39,9 @@ export class UserBaseDto {
       ROLES.OPERATOR,
       ROLES.USER,
     ],
+    default: ROLES.USER,
   })
-  roles: ROLES;
+  roles: ROLES[];
 
   @ApiProperty({ description: 'refresh token' })
   refreshToken: string;
@@ -51,6 +51,21 @@ export class UserBaseDto {
 
   @ApiProperty({ description: '사용자 삭제 일시' })
   deletedAt: Date;
+
+  static fromDoc(doc: UserDocument): UserBaseDto {
+    const dto = new UserBaseDto();
+    dto.id = doc._id.toString();
+    dto.nickname = doc.nickname;
+    dto.email = doc.email;
+    dto.password = doc.password;
+    dto.createdAt = doc.createdAt;
+    dto.updatedAt = doc.updatedAt;
+    dto.roles = doc.roles as ROLES[];
+    dto.refreshToken = doc.refreshToken;
+    dto.isDeleted = doc.isDeleted;
+    dto.deletedAt = doc.deletedAt;
+    return dto;
+  }
 }
 
 export class CreateUserRequestDto extends PartialType(
@@ -64,7 +79,7 @@ export class CreateUserResponseDto extends PickType(UserBaseDto, [
 ]) {
   static fromDocument(doc: UserDocument): CreateUserResponseDto {
     const dto = new CreateUserResponseDto();
-    dto.id = doc._id as Types.ObjectId;
+    dto.id = doc._id.toString();
     dto.nickname = doc.nickname;
     dto.email = doc.email;
     return dto;
@@ -78,7 +93,7 @@ export class UpdateUserResponseDto extends PartialType(
 ) {
   static fromDocument(doc: UserDocument): UpdateUserResponseDto {
     const dto = new UpdateUserResponseDto();
-    dto.id = doc._id as Types.ObjectId;
+    dto.id = doc._id.toString();
     dto.nickname = doc.nickname;
     dto.email = doc.email;
     dto.updatedAt = doc.updatedAt;
@@ -98,6 +113,24 @@ export class DeleteUserResponseDto extends PickType(UserBaseDto, [
     dto.email = doc.email;
     dto.isDeleted = doc.isDeleted;
     dto.deletedAt = doc.deletedAt;
+    return dto;
+  }
+}
+
+export class FindByEmailResponseDto extends OmitType(UserBaseDto, [
+  'password',
+  'roles',
+]) {
+  static fromDoc(doc: UserDocument): FindByEmailResponseDto {
+    const dto = new FindByEmailResponseDto();
+    dto.createdAt = doc.createdAt;
+    dto.deletedAt = doc.deletedAt;
+    dto.email = doc.email;
+    dto.id = doc._id.toString();
+    dto.isDeleted = doc.isDeleted;
+    dto.nickname = doc.nickname;
+    dto.refreshToken = doc.refreshToken;
+    dto.updatedAt = doc.updatedAt;
     return dto;
   }
 }

@@ -36,8 +36,36 @@ export class AuthDto {
 
 export class LoginRequestDto extends PickType(AuthDto, ['email', 'password']) {}
 
-export class LoginResponsetDto extends PickType(AuthDto, ['accessToken', 'refreshToken']) {}
+export class LoginResponseDto extends PickType(AuthDto, [
+  'accessToken',
+  'refreshToken',
+]) {}
 
-export class RefreshRequestDto extends PickType(AuthDto, ['email', 'refreshToken']) {}
+export class RefreshRequestDto extends PickType(AuthDto, [
+  'email',
+  'refreshToken',
+]) {}
 
-export class RefreshResponseDto extends PickType(AuthDto, ['accessToken', 'refreshToken']) {}
+export class RefreshResponseDto extends PickType(AuthDto, [
+  'accessToken',
+  'refreshToken',
+]) {}
+
+export class VerifyTokenRequestDto {
+  @ApiProperty({ description: 'access token' })
+  token: string;
+}
+
+export class VerifyTokenResponseDto {
+  @ApiProperty({ description: '검증 여부' })
+  isValid: boolean;
+
+  @ApiProperty({
+    description: 'payload',
+    type: PickType(AuthDto, ['email', 'nickname', 'roles']),
+  })
+  payload: Pick<AuthDto, 'email' | 'nickname' | 'roles'> & {
+    iat: string;
+    exp: string;
+  };
+}
