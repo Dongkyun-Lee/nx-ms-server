@@ -12,6 +12,6 @@ import { RewardModule } from 'src/reward/reward.module';
   ],
   controllers: [EventController],
   providers: [EventService],
-  exports: [EventService],
+  exports: [EventService, MongooseModule],
 })
 export class EventModule {}

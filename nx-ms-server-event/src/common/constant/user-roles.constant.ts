@@ -8,7 +8,7 @@ export enum ROLES {
 
 export const ROLES_KEY = 'roles';
 
-export const HEADER_ROLES_KEY = 'ms-user-rolse';
+export const HEADER_ROLES_KEY = 'ms-user-roles';
 
 export const ALL_ROLES_EXCEPT_ANONYMOUS = Object.values(ROLES).filter(
   (role) => role !== ROLES.ANONYMOUS,
