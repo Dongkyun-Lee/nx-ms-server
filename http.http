@@ -1,0 +1,32 @@
+POST http://localhost:3001/auth/auth/login HTTP/1.1
+content-type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "test"
+}
+
+###
+POST http://localhost:3001/auth/users
+content-type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "test",
+  "nickname": "testuser"
+}
+
+###
+POST http://localhost:3000/auth/refresh
+content-type: application/json
+
+{
+  "email": "test@test.com",
+  "refreshToken": "952ea015-b204-4628-a790-49d4c5956ba9"
+}
+
+###
+GET http://localhost:3001/auth/user/test@test.com
+
+###
+GET http://localhost:3002/event
