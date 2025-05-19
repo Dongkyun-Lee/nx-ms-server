@@ -64,16 +64,6 @@ export class AuthController {
     );
   }
 
-  @Roles(...ALL_ROLES_EXCEPT_ANONYMOUS)
-  @Get('auth/profile')
-  async getProfile(
-    @Request() req: any,
-    @Headers() headers: any,
-    @Query() query: any,
-  ) {
-    return await this.authService.getProfile(req, req.path, headers, query);
-  }
-
   @Public()
   @Roles(ROLES.ANONYMOUS)
   @Post('user')

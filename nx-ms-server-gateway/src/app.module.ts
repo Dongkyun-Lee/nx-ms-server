@@ -13,7 +13,7 @@ import { JwtAuthGuard } from './common/guard/jwt-auth.guard';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.local', '.env'],
+      envFilePath: ['.env.gateway.local'],
       isGlobal: true,
     }),
     EventModule,

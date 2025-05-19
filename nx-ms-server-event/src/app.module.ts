@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LogInterceptor } from './common/interceptor/log/log.interceptor';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -13,7 +11,7 @@ import { RolesGuard } from './common/guard';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.local', '.env'],
+      envFilePath: ['.env.event.local'],
       isGlobal: true,
     }),
     MongooseModule.forRootAsync({
@@ -27,9 +25,7 @@ import { RolesGuard } from './common/guard';
     RewardModule,
     RewardClaimModule,
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     {
       provide: APP_INTERCEPTOR,
       useClass: LogInterceptor,
