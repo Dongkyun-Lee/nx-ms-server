@@ -32,7 +32,11 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<UserDocument | null> {
-    return this.userModel.findOne({ email }).exec();
+    const user = this.userModel.findOne({ email }).exec();
+    if (!user) {
+      throw new NotFoundException(`Failed to find user with email ${email}`);
+    }
+    return user;
   }
 
   async findByNickName(nickname: string): Promise<User | null> {

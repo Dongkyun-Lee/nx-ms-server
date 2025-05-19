@@ -1,4 +1,3 @@
-// common/decorators/authenticated-user.decorator.ts
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const AuthenticatedUser = createParamDecorator(

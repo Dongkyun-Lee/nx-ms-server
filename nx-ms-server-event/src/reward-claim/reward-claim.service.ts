@@ -1,13 +1,25 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, PipelineStage, Types } from 'mongoose';
 import { EventService } from 'src/event/event.service';
 import { RewardService } from 'src/reward/reward.service';
 import { RewardClaim, RewardClaimDocument } from './entity/reward-claim.entity';
-import { CLAIM_STATUS, REWARD_TYPE } from 'src/common/type';
-import { RequestClaimResponse } from './dto/reward-claim.dto';
+import { CLAIM_STATUS } from 'src/common/type';
+import {
+  GetAllLatestClaimsDto,
+  GetAllLatestClaimsQueryDto,
+  GetClaimHistoryDto,
+  GetMyClaimResponseDto,
+  GetMyClaimsResponseDto,
+  RequestClaimResponseDto,
+} from './dto/reward-claim.dto';
 import { GetEventResponseDto } from 'src/event/dto/event.dto';
 import { RewardDto } from 'src/reward/dto/reward.dto';
+import axios from 'axios';
 
 @Injectable()
 export class RewardClaimService {
@@ -40,7 +52,7 @@ export class RewardClaimService {
   async requestClaim(
     userId: string,
     eventId: string,
-  ): Promise<RequestClaimResponse> {
+  ): Promise<RequestClaimResponseDto> {
     const oldClaim = await this.rewardClaimModel
       .findOne({ userId, eventId })
       .sort({ updatedAt: -1 })
@@ -73,7 +85,7 @@ export class RewardClaimService {
         status: CLAIM_STATUS.DUPLICATED,
       }).save();
 
-      return RequestClaimResponse.fromDoc({
+      return RequestClaimResponseDto.fromDoc({
         ...dupDoc.toObject(),
         message: 'Duplicated claim request',
       });
@@ -84,7 +96,7 @@ export class RewardClaimService {
         status: CLAIM_STATUS.EXPIRED,
       }).save();
 
-      return RequestClaimResponse.fromDoc({
+      return RequestClaimResponseDto.fromDoc({
         ...expDoc.toObject(),
         message: 'Event with expired reward period',
       });
@@ -107,7 +119,7 @@ export class RewardClaimService {
             event.rewardIds,
           );
 
-          return RequestClaimResponse.fromDoc({
+          return RequestClaimResponseDto.fromDoc({
             ...approvedDoc.toObject(),
             rewards: rewards.map((reward) => RewardDto.fromDocument(reward)),
           });
@@ -118,7 +130,7 @@ export class RewardClaimService {
             eventId,
             status: CLAIM_STATUS.NOT_QUALIFIED,
           }).save();
-          return RequestClaimResponse.fromDoc({
+          return RequestClaimResponseDto.fromDoc({
             ...notQualifiedDoc.toObject(),
             message: 'Event conditions not met',
           });
@@ -129,7 +141,7 @@ export class RewardClaimService {
             eventId,
             status: CLAIM_STATUS.NOT_YET_CLAIMABLE,
           }).save();
-          return RequestClaimResponse.fromDoc({
+          return RequestClaimResponseDto.fromDoc({
             ...notYetClaimable.toObject(),
             message: 'Reward is not yet claimable',
           });
@@ -140,7 +152,7 @@ export class RewardClaimService {
             eventId,
             status: CLAIM_STATUS.EXPIRED,
           }).save();
-          return RequestClaimResponse.fromDoc({
+          return RequestClaimResponseDto.fromDoc({
             ...expDoc.toObject(),
             message: 'Event with expired reward period',
           });
@@ -148,11 +160,132 @@ export class RewardClaimService {
     }
   }
 
-  async getMyClaims() {}
+  // userId-eventId 로 그룹핑해서 최신 데이터만 출력
+  async getMyClaims(userId: string): Promise<GetMyClaimsResponseDto> {
+    const pipeline = [
+      { $match: { userId } },
+      { $sort: { updatedAt: -1 } } as const,
+      {
+        $group: {
+          _id: { userId: '$userId', eventId: '$eventId' },
+          doc: { $first: '$$ROOT' },
+        },
+      },
+      { $replaceRoot: { newRoot: '$doc' } },
+    ];
 
-  async getMyLatestClaim() {}
+    const result = await this.rewardClaimModel.aggregate(pipeline).exec();
 
-  async getAllLatestClaims() {}
+    return GetMyClaimsResponseDto.fromDoc(result);
+  }
 
-  async getClaimHistory() {}
+  async getMyClaim(
+    userId: string,
+    rewardClaimId: string,
+  ): Promise<GetMyClaimResponseDto> {
+    const selected = await this.rewardClaimModel
+      .findById(rewardClaimId)
+      .lean()
+      .exec();
+
+    if (!selected) {
+      throw new NotFoundException(
+        `RewardClaim with ${rewardClaimId} doese not exist`,
+      );
+    }
+
+    if (userId !== selected.userId.toString()) {
+      throw new BadRequestException(`Wrong access`);
+    }
+
+    const result = await this.rewardClaimModel
+      .find({
+        userId,
+        eventId: selected.eventId,
+      })
+      .sort({ updatedAt: -1 })
+      .lean()
+      .exec();
+
+    return GetMyClaimResponseDto.fromDoc(result);
+  }
+
+  async getAllLatestClaims(
+    query: GetAllLatestClaimsQueryDto,
+  ): Promise<GetAllLatestClaimsDto> {
+    const match: any = {};
+    console.log('query', query);
+
+    // auth server 요청 userEmail -> userId
+    if (query.userEmail) {
+      try {
+        const { data } = await axios.get(
+          `${process.env.AUTH_SERVICE_URL}/user/${query.userEmail}`,
+        );
+
+        match.userId = data._id.toString();
+      } catch (error) {
+        console.log(error.message);
+        throw new BadRequestException(
+          `Failed to find User Id with email ${query.userEmail}`,
+        );
+      }
+    }
+
+    if (query.eventName) {
+      try {
+        const event = await this.eventService.findIdByName(query.eventName);
+        match.eventId = event._id.toString();
+      } catch (error) {
+        throw new BadRequestException(
+          `Failed to find Event Id with email ${query.eventName}`,
+        );
+      }
+    }
+
+    if (query.status && query.status.length > 0) {
+      match.status = { $in: [...query.status] };
+    }
+
+    const claimedAt: any = {};
+    if (query.rewardClaimedFrom)
+      claimedAt.$gte = new Date(query.rewardClaimedFrom);
+    if (query.rewardClaimedTo) claimedAt.$lte = new Date(query.rewardClaimedTo);
+    if (Object.keys(claimedAt).length > 0) {
+      match.rewardClaimedAt = claimedAt;
+    }
+
+    console.log('match', match);
+    const pipeline: PipelineStage[] = [
+      { $match: match },
+      { $sort: { updatedAt: -1 } },
+    ];
+
+    const result = await this.rewardClaimModel.aggregate(pipeline).exec();
+    return GetAllLatestClaimsDto.fromDoc(result);
+  }
+
+  async getClaimHistory(rewardClaimId: string): Promise<GetClaimHistoryDto> {
+    const selected = await this.rewardClaimModel
+      .findById(rewardClaimId)
+      .lean()
+      .exec();
+
+    if (!selected) {
+      throw new NotFoundException(
+        `RewardClaim with ${rewardClaimId} does not exist`,
+      );
+    }
+
+    const result = await this.rewardClaimModel
+      .find({
+        userId: selected.userId,
+        eventId: selected.eventId,
+      })
+      .sort({ updatedAt: -1 })
+      .lean()
+      .exec();
+
+    return GetClaimHistoryDto.fromDoc(result);
+  }
 }

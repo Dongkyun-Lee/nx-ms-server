@@ -12,7 +12,7 @@ import {
   UpdateEventRequestDto,
   UpdateEventResponnseDto,
 } from './dto/event.dto';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { Event, EventDocument } from './entities/event.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { RewardService } from 'src/reward/reward.service';
@@ -121,5 +121,9 @@ export class EventService {
     if (!eventDoc) return null;
 
     return GetEventResponseDto.fromDocument(eventDoc);
+  }
+
+  async findIdByName(name: string): Promise<EventDocument> {
+    return this.eventModel.findOne({ name }).exec();
   }
 }

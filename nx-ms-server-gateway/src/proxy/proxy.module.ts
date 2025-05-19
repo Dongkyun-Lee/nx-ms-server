@@ -1,4 +1,3 @@
-// src/proxy/proxy.module.ts
 import { Global, Module } from '@nestjs/common';
 import { HttpProxyService } from './http-proxy.service';
 import { HttpModule } from '@nestjs/axios';

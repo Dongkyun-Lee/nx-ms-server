@@ -29,7 +29,7 @@ export class HttpProxyService {
       body?: any;
       headers?: any;
       params?: any;
-      user?: any; // user 정보 추가
+      user?: any;
     },
   ): Promise<Observable<AxiosResponse<T>>> {
     const headers = this.mergeHeadersWithUser(
