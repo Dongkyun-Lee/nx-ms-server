@@ -78,6 +78,8 @@ yarn start:dev
 
 ## sample dataset
 
+> password 는 `test` 로 동일함
+
 | 권한     | email             |
 | -------- | ----------------- |
 | USER     | user@test.com     |
