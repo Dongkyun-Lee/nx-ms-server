@@ -25,7 +25,7 @@ export class AuthController {
     @Query() query: any,
     @Body() body: any,
   ) {
-    return await this.authService.login(req, req.path, body, headers, query);
+    return await this.authService.post(req, req.path, body, headers, query);
   }
 
   @Public()
@@ -37,13 +37,7 @@ export class AuthController {
     @Query() query: any,
     @Body() body: any,
   ) {
-    return await this.authService.refreshToken(
-      req,
-      req.path,
-      body,
-      headers,
-      query,
-    );
+    return await this.authService.post(req, req.path, body, headers, query);
   }
 
   @Public()
@@ -55,13 +49,7 @@ export class AuthController {
     @Query() query: any,
     @Body() body: any,
   ) {
-    return await this.authService.verifyJwt(
-      req,
-      req.path,
-      body,
-      headers,
-      query,
-    );
+    return await this.authService.post(req, req.path, body, headers, query);
   }
 
   @Public()
@@ -73,13 +61,7 @@ export class AuthController {
     @Query() query: any,
     @Body() body: any,
   ) {
-    return await this.authService.createUser(
-      req,
-      req.path,
-      body,
-      headers,
-      query,
-    );
+    return await this.authService.post(req, req.path, body, headers, query);
   }
 
   @Roles(...ALL_ROLES_EXCEPT_ANONYMOUS)
@@ -89,6 +71,6 @@ export class AuthController {
     @Headers() headers: any,
     @Query() query: any,
   ) {
-    return this.authService.getUserByEmail(req, req.path, headers, query);
+    return this.authService.get(req, req.path, headers, query);
   }
 }
