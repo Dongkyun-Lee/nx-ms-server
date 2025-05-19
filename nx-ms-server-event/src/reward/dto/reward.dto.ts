@@ -3,8 +3,13 @@ import { CommonDto } from 'src/common/dto/common.dto';
 import { RewardDocument } from '../entities/reward.entity';
 import { Type } from 'class-transformer';
 import { EventDto } from 'src/event/dto/event.dto';
+import { REWARD_TYPE } from 'src/common/type';
+import { Types } from 'mongoose';
 
-function mapRewardDocToDto<T extends Partial<RewardDto>>(doc: RewardDocument, dto: T): T {
+function mapRewardDocToDto<T extends Partial<RewardDto>>(
+  doc: RewardDocument,
+  dto: T,
+): T {
   dto.id = doc._id.toString();
   dto.name = doc.name;
   dto.description = doc.description;
@@ -16,7 +21,7 @@ function mapRewardDocToDto<T extends Partial<RewardDto>>(doc: RewardDocument, dt
   dto.deleteAt = doc.deletedAt;
   if (doc.eventIds && doc.eventIds.length > 0) {
     if (typeof doc.eventIds[0] === 'object' && '_id' in doc.eventIds[0]) {
-      dto.events = (doc.eventIds as any[]).map((e) => ({
+      (dto.events as any) = (doc.eventIds as any[]).map((e) => ({
         id: e._id.toString(),
         name: e.name,
       }));
@@ -32,17 +37,25 @@ export class RewardDto extends CommonDto {
   @ApiProperty({ description: '보상 이름' })
   name: string;
 
-  @ApiProperty({ description: '연결된 이벤트 아이디 리스트', type: [String], default: [] })
+  @ApiProperty({
+    description: '연결된 이벤트 아이디 리스트',
+    type: [Types.ObjectId],
+    default: [],
+    example: ['6be28df3831akldsf'],
+  })
   eventIds: string[];
 
-  @ApiProperty({ description: '연결된 이벤트 객체 리스트', type: [PartialType(EventDto)], default: [] })
-  events: Partial<EventDto>[];
+  @ApiProperty({
+    description: '연결된 이벤트 객체 리스트',
+    type: [EventDto],
+  })
+  events?: EventDto[];
 
   @ApiProperty({ description: '보상 설명' })
-  description?: string;
+  description: string;
 
-  @ApiProperty({ description: '보상 유형' })
-  type: string;
+  @ApiProperty({ enum: REWARD_TYPE, description: '보상 유형' })
+  type: REWARD_TYPE;
 
   @ApiProperty({ description: '보상 개수', required: true, default: 1 })
   amount: number;
@@ -51,7 +64,7 @@ export class RewardDto extends CommonDto {
     const dto = new RewardDto();
     dto.id = entity?._id?.toString();
     dto.name = entity.name;
-    dto.eventIds = entity.eventIds.map((id) => (id.toString()))
+    dto.eventIds = entity.eventIds.map((id) => id.toString());
     dto.description = entity.description;
     dto.type = entity.type;
     dto.amount = entity.amount;
@@ -70,7 +83,7 @@ export class CreateRewardResponseDto extends PartialType(RewardDto) {
   }
 }
 
-export class GetRewardRequestDto extends PickType(RewardDto, ['id']) { }
+export class GetRewardRequestDto extends PickType(RewardDto, ['id']) {}
 
 export class GetRewardResponseDto extends PartialType(RewardDto) {
   static fromDocument(doc: RewardDocument): GetRewardResponseDto {
@@ -88,7 +101,9 @@ export class GetAllRewardResponseDto {
   rewards: GetRewardResponseDto[];
 }
 
-export class UpdateRewardRequestDto extends PartialType(OmitType(RewardDto, ['id', 'updatedAt', 'createdAt'])) { }
+export class UpdateRewardRequestDto extends PartialType(
+  OmitType(RewardDto, ['id', 'updatedAt', 'createdAt']),
+) {}
 
 export class UpdateRewardResponnseDto extends PartialType(RewardDto) {
   static fromDocument(doc: RewardDocument): UpdateRewardResponnseDto {

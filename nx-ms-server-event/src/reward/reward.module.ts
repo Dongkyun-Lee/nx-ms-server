@@ -6,9 +6,7 @@ import { Reward, RewardSchema } from './entities/reward.entity';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: Reward.name, schema: RewardSchema },
-    ]),
+    MongooseModule.forFeature([{ name: Reward.name, schema: RewardSchema }]),
   ],
   controllers: [RewardController],
   providers: [RewardService],

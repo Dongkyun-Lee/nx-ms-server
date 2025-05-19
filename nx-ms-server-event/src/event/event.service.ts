@@ -1,6 +1,18 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateEventRequestDto, CreateEventResponseDto, DeleteEventResponnseDto, GetAllEventResponseDto, GetEventResponseDto, UpdateEventRequestDto, UpdateEventResponnseDto } from './dto/event.dto';
-import { Model } from 'mongoose';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import {
+  CreateEventRequestDto,
+  CreateEventResponseDto,
+  DeleteEventResponnseDto,
+  GetAllEventResponseDto,
+  GetEventResponseDto,
+  UpdateEventRequestDto,
+  UpdateEventResponnseDto,
+} from './dto/event.dto';
+import { Model, ObjectId } from 'mongoose';
 import { Event, EventDocument } from './entities/event.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { RewardService } from 'src/reward/reward.service';
@@ -34,13 +46,20 @@ export class EventService {
     result = await createdEvent.save();
 
     if (rewards && result) {
-      const _rewards = await this.rewardService.createByList(rewards, result._id.toString());
+      const _rewards = await this.rewardService.createByList(
+        rewards,
+        result._id.toString(),
+      );
       if (_rewards.length !== rewards.length) {
         errorMessage = 'Some rewards are failed to create';
       }
       const ids = _rewards.map((_reward) => _reward.id || _reward._id);
 
-      result = await this.eventModel.findByIdAndUpdate(result._id, { rewardIds: ids }, { new: true });
+      result = await this.eventModel.findByIdAndUpdate(
+        result._id,
+        { rewardIds: ids },
+        { new: true },
+      );
     }
 
     return { ...CreateEventResponseDto.fromDocument(result), errorMessage };
@@ -48,12 +67,15 @@ export class EventService {
 
   async findAll(): Promise<GetAllEventResponseDto> {
     const events = await this.eventModel.find().exec();
-    const dtoEvents = events.map(event => GetEventResponseDto.fromDocument(event));
+    const dtoEvents = events.map((event) =>
+      GetEventResponseDto.fromDocument(event),
+    );
     return new GetAllEventResponseDto(dtoEvents);
   }
 
   async findOne(id: string): Promise<GetEventResponseDto> {
-    const eventDoc = await this.eventModel.findById(id)
+    const eventDoc = await this.eventModel
+      .findById(id)
       .populate('rewardIds')
       .lean()
       .exec();
@@ -63,8 +85,12 @@ export class EventService {
     return GetEventResponseDto.fromDocument(eventDoc);
   }
 
-  async update(id: string, body: UpdateEventRequestDto): Promise<UpdateEventResponnseDto> {
-    const updatedUser = await this.eventModel.findByIdAndUpdate(id, body, { new: true })
+  async update(
+    id: string,
+    body: UpdateEventRequestDto,
+  ): Promise<UpdateEventResponnseDto> {
+    const updatedUser = await this.eventModel
+      .findByIdAndUpdate(id, body, { new: true })
       .populate('rewardIds')
       .lean()
       .exec();
@@ -79,10 +105,25 @@ export class EventService {
     if (target.isDeleted) {
       throw new BadRequestException(`Eventwith ID ${id} already deleted`);
     }
-    const deletedUser = await this.eventModel.findByIdAndUpdate(id, { isDeleted: true, deletedAt: Date.now() });
+    const deletedUser = await this.eventModel.findByIdAndUpdate(id, {
+      isDeleted: true,
+      deletedAt: Date.now(),
+    });
     if (!deletedUser) {
       throw new NotFoundException(`Event with ID ${id} not found`);
     }
     return DeleteEventResponnseDto.fromDocument(deletedUser);
+  }
+
+  async findOneNoPopulate(id: string): Promise<GetEventResponseDto> {
+    const eventDoc = await this.eventModel.findById(id).lean().exec();
+
+    if (!eventDoc) return null;
+
+    return GetEventResponseDto.fromDocument(eventDoc);
+  }
+
+  async findIdByName(name: string): Promise<EventDocument> {
+    return this.eventModel.findOne({ name }).exec();
   }
 }

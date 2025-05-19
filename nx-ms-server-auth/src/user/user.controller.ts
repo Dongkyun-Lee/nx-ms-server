@@ -8,17 +8,14 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  postUser(@Body() createDto: CreateUserRequestDto): Promise<CreateUserResponseDto> {
+  postUser(
+    @Body() createDto: CreateUserRequestDto,
+  ): Promise<CreateUserResponseDto> {
     return this.userService.createUser(createDto);
   }
 
   @Get(':email')
-  async getUserByEmail(@Param('email') email: string, @AuthenticatedUser() authUser) {
-    const user = await this.userService.findByEmail(email);
-
-    if (!user) {
-      return { status: 404, data: null, error:  true, errorMessage: `${email} 유저가 존재하지 않습니다.` }
-    }
-    return user;
+  async getUserByEmail(@Param('email') email: string) {
+    return await this.userService.findByEmail(email);
   }
 }

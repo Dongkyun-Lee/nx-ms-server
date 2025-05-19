@@ -1,4 +1,3 @@
-// common/decorators/authenticated-user.decorator.ts
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const AuthenticatedUser = createParamDecorator(
@@ -8,7 +7,7 @@ export const AuthenticatedUser = createParamDecorator(
       id: request?.headers['ms-user-id'] || null,
       email: request?.headers['ms-user-email'] || null,
       nickname: request?.headers['ms-user-nickname'] || null,
-      role: request?.headers['ms-user-role']?.split(','),
+      role: request?.headers['ms-user-roles']?.split(','),
     };
 
     return user.id ? user : null;

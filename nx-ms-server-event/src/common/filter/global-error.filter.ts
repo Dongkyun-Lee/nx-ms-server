@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 
-@Catch() // 모든 예외를 잡는 대신 아래 조건으로 필터링할게요.
+@Catch()
 export class GlobalErrorFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -91,7 +91,9 @@ export class GlobalErrorFilter implements ExceptionFilter {
             ? message
             : (message as any).message || 'Unexpected error',
         errorCode:
-          exception instanceof HttpException ? (exception.getResponse() as any).errorCode : undefined,
+          exception instanceof HttpException
+            ? (exception.getResponse() as any).errorCode
+            : undefined,
         timestamp: new Date().toISOString(),
         path: request.url,
       });
