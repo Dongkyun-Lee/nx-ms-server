@@ -1,0 +1,10 @@
+db.rewards.find().pretty()
+db.events.find().pretty()
+db.rewardclaims.find().pretty()
+show tables
+show reocrds
+show schemas
+use event_db
+show dbs
+clear
+show dbs
