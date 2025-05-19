@@ -1,5 +1,15 @@
-import { Body, Controller, Delete, Get, Headers, Patch, Post, Query, Request } from '@nestjs/common';
-import { ALL_ROLES_EXCEPT_ANONYMOUS, ROLES } from 'src/common/constants';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Headers,
+  Patch,
+  Post,
+  Query,
+  Request,
+} from '@nestjs/common';
+import { ALL_USER_ROLES_EXCEPT_USER, ROLES } from 'src/common/constants';
 import { Roles } from 'src/common/decorator/roles.decorator';
 import { Public } from 'src/common/decorator/public.decorator';
 import { EventService } from './event.service';
@@ -112,5 +122,56 @@ export class EventController {
     @Query() query: any,
   ) {
     return this.eventService.delete(req, req.path, headers, query);
+  }
+
+  @Roles(ROLES.USER)
+  @Post('claim')
+  async requestClaim(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+    @Body() body: any,
+  ) {
+    return await this.eventService.post(req, req.path, body, headers, query);
+  }
+
+  @Roles(ROLES.USER)
+  @Get('claim/my')
+  async getMyClaims(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.eventService.get(req, req.path, headers, query);
+  }
+
+  @Roles(ROLES.USER)
+  @Get('claim/my/:rewardClaimId')
+  async getMyClaim(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.eventService.get(req, req.path, headers, query);
+  }
+
+  @Roles(...ALL_USER_ROLES_EXCEPT_USER)
+  @Get('claim')
+  async getAllLatestClaims(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.eventService.get(req, req.path, headers, query);
+  }
+
+  @Roles(...ALL_USER_ROLES_EXCEPT_USER)
+  @Get('claim/:rewardClaimId')
+  async getClaimHistory(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.eventService.get(req, req.path, headers, query);
   }
 }

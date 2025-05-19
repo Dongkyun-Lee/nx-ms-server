@@ -9,3 +9,7 @@ export enum ROLES {
 export const ALL_ROLES_EXCEPT_ANONYMOUS = Object.values(ROLES).filter(
   (role) => role !== ROLES.ANONYMOUS,
 );
+
+export const ALL_USER_ROLES_EXCEPT_USER = Object.values(ROLES).filter(
+  (role) => role !== ROLES.ANONYMOUS && role !== ROLES.USER,
+);

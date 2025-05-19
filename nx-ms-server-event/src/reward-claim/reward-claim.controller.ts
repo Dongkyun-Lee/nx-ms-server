@@ -1,16 +1,10 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiBody,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam, ApiBody } from '@nestjs/swagger';
 import { ROLES, ROLES_EXCEPT_USER } from 'src/common/constant';
 import { AuthenticatedUser, Roles } from 'src/common/decorator';
 import { UserHeaders } from 'src/common/type/user-headers.interface';
 import { RewardClaimService } from './reward-claim.service';
-import { AuthenticatedUserInfo, CLAIM_STATUS } from 'src/common/type';
+import { AuthenticatedUserInfo } from 'src/common/type';
 import { GetAllLatestClaimsQueryDto } from './dto/reward-claim.dto';
 
 @ApiTags('RewardClaim')
