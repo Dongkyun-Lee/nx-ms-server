@@ -29,8 +29,19 @@ export class UserBaseDto {
   @ApiProperty({ description: '수정일시' })
   updatedAt: Date;
 
-  @ApiProperty({ description: '사용자 역할', isArray: true, example: ROLES })
-  roles: string[];
+  @ApiProperty({
+    description: '사용자 역할',
+    enum: ROLES,
+    isArray: true,
+    example: [
+      ROLES.ADMIN,
+      ROLES.ANONYMOUS,
+      ROLES.AUDITOR,
+      ROLES.OPERATOR,
+      ROLES.USER,
+    ],
+  })
+  roles: ROLES;
 
   @ApiProperty({ description: 'refresh token' })
   refreshToken: string;
@@ -42,9 +53,15 @@ export class UserBaseDto {
   deletedAt: Date;
 }
 
-export class CreateUserRequestDto extends PartialType(OmitType(UserBaseDto, ['id', 'refreshToken', 'createdAt', 'updatedAt'])) {}
+export class CreateUserRequestDto extends PartialType(
+  OmitType(UserBaseDto, ['id', 'refreshToken', 'createdAt', 'updatedAt']),
+) {}
 
-export class CreateUserResponseDto extends PickType(UserBaseDto, ['id', 'nickname', 'email']) {
+export class CreateUserResponseDto extends PickType(UserBaseDto, [
+  'id',
+  'nickname',
+  'email',
+]) {
   static fromDocument(doc: UserDocument): CreateUserResponseDto {
     const dto = new CreateUserResponseDto();
     dto.id = doc._id as Types.ObjectId;
@@ -56,7 +73,9 @@ export class CreateUserResponseDto extends PickType(UserBaseDto, ['id', 'nicknam
 
 export class UpdateUserRequestDto extends PartialType(UserBaseDto) {}
 
-export class UpdateUserResponseDto extends PartialType(OmitType(UserBaseDto, ['password', 'refreshToken'])) {
+export class UpdateUserResponseDto extends PartialType(
+  OmitType(UserBaseDto, ['password', 'refreshToken']),
+) {
   static fromDocument(doc: UserDocument): UpdateUserResponseDto {
     const dto = new UpdateUserResponseDto();
     dto.id = doc._id as Types.ObjectId;
@@ -69,7 +88,11 @@ export class UpdateUserResponseDto extends PartialType(OmitType(UserBaseDto, ['p
 
 export class DeleteUserRequestDto extends PickType(UserBaseDto, ['email']) {}
 
-export class DeleteUserResponseDto extends PickType(UserBaseDto, ['email', 'isDeleted', 'deletedAt']) {
+export class DeleteUserResponseDto extends PickType(UserBaseDto, [
+  'email',
+  'isDeleted',
+  'deletedAt',
+]) {
   static fromDocument(doc: UserDocument): DeleteUserResponseDto {
     const dto = new DeleteUserResponseDto();
     dto.email = doc.email;
