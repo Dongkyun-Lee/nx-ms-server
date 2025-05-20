@@ -2,7 +2,7 @@
 
 ## 📁 디렉토리 구조
 
-```md
+```bash
 src
 ├── auth # 인증 서버 통신 모듈 (컨트롤러, 서비스, 모듈 등)
 │ ├── auth.controller.spec.ts # 인증 컨트롤러 테스트
