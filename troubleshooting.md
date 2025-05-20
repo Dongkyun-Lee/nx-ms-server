@@ -90,8 +90,8 @@
 
 - [ ] 각각의 service 들을 OnApplicationBootwtrap 구현체로 만든다
 - [ ] mognodb initial script 를 만들고 docker volumes로 연동한다
-- [ ] 별도의 initial data 생성 모듈을 구현한다
-- [x] mongodb contaiver volume을 형상관리한다
+- [x] 별도의 initial data 생성 모듈을 구현한다
+- [ ] mongodb contaiver volume을 형상관리한다
 
 ---
 
@@ -178,3 +178,16 @@
 > http-proxy.service 를 수정하여, observable 의 catchError 를 지정해 발생한 exception를 그대로 발생시킴
 >
 > 서비스 단에서 그대로 발생시키기 때문에 gw response 까지도 전달됨
+
+---
+
+### repository 크기
+
+#### 상황
+
+> mongodb_data 디렉토리를 repository에 추가해서 초기 데이터 폼을 공유하려고 했지만 repository 사이즈가 불편하게 커지고 git file들로 관리되는 것에 대해도 리소스 낭비가 심하다고 생각됨
+
+#### 조치
+
+> 쉽게 가려다가 돌아가게 되었음. mongodb_db 삭제하고 script 실행 방식으로 변경함
+> 로컬 데이터 유지를 위해서 프로젝트 경로에 볼륨 마운트는 유지하고 .gitignore에 추가함
