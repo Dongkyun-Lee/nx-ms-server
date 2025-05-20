@@ -26,7 +26,7 @@
 
 ---
 
-## docker 설정
+## docker container 구성
 
 > 프로젝트는 4개의 이미지(3개의 프로젝트 + mongodb)를 실행함
 >
@@ -42,7 +42,7 @@
 
 - 실제 서비스 시의 시점을 고려하여 구성한 설정 파일
 
-- 기본 샘플 데이터 구성을 위하여 mongodb 의 volume mount는 프로젝트의 저장소로 설정하였음
+- 기본 샘플 유저 데이터 구성을 위하여 mongodb 의 volume mount는 프로젝트의 저장소로 설정하였음
 
 ---
 
@@ -66,11 +66,21 @@ docker-compose -f 'docker-compose.local.yml' up -d --build
 
 > 로컬 실행 시에는 mongodb 서비스를 별도로 시작해주어야 함
 >
-> docker-compose.local.yml 의 컨테이너 별 환경변수를 각 경로에 .env 파일 생성 필요
+> docker-compose.local.yml 의 컨테이너 별 환경변수를 각 경로에 .env.{project}.local 파일 생성 필요
+> 프로젝트 최상단의 local.envs 폴더에 있는 env 파일 사용 권장
 
 ```sh
+# env 파일 복사
+cp ${project_root}/local.envs/${target_env} ${project_root}/${target_project}
+# cp ./local.env/.env.auth.local ./nx-ms-server-auth/
+
+# project 폴더로 이동
 cd ./${target-project}
+# cd ./nx-ms-server-auth
+
+# package 설치
 yarn install
+# 서버 구동
 yarn start:dev
 ```
 
