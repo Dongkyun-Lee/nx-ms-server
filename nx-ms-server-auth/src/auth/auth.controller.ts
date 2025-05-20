@@ -10,13 +10,11 @@ import {
 } from './dto/auth.dto';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserBaseDto } from 'src/user/dto/user.dto';
-import { Roles } from 'src/common/decorator/roles.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Roles('OPERATOR')
   @ApiOperation({ summary: '로그인 요청' })
   @ApiBody({ type: LoginRequestDto })
   @ApiResponse({
