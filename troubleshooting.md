@@ -191,3 +191,5 @@
 
 > 쉽게 가려다가 돌아가게 되었음. mongodb_db 삭제하고 script 실행 방식으로 변경함
 > 로컬 데이터 유지를 위해서 프로젝트 경로에 볼륨 마운트는 유지하고 .gitignore에 추가함
+> /mongo-init/ 경로에 db-init.js 에 각 권한 별로 샘플 유저를 생성하는 스크립트를 작성함.
+> mongo-init 경로는 docker-compose 에 마운트 시켜서 database가 비어있으면 동작함 (mongodb default)

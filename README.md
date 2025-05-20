@@ -88,14 +88,7 @@ yarn start:dev
 
 ## sample dataset
 
-> password 는 `test` 로 동일
-
-| 권한     | email             |
-| -------- | ----------------- |
-| USER     | user@test.com     |
-| ADMIN    | admin@test.com    |
-| OPERATOR | operator@test.com |
-| AUDITOR  | auditor@test.com  |
+> [initial script](./mongo-init/db-init.js) (password 는 `test` 로 동일)
 
 ---
 
