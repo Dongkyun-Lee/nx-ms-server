@@ -78,7 +78,7 @@ yarn start:dev
 
 ## sample dataset
 
-> password 는 `test` 로 동일함
+> password 는 `test` 로 동일
 
 | 권한     | email             |
 | -------- | ----------------- |
@@ -91,7 +91,7 @@ yarn start:dev
 
 ## README
 
-> 각 서버 별 설명은 서버 디렉토리의 README.md 참조 바람
+> 각 서버 별 기능 및 설계 배경은 서버 디렉토리의 README.md 참조 바랍니다.
 
 - [gateway readme](./nx-ms-server-gateway/README.md)
 - [auth readme](./nx-ms-server-auth/README.md)
