@@ -1,99 +1,75 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# nx-ms-server-gateway
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 📁 디렉토리 구조
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ yarn install
+```md
+src
+├── auth # 인증 서버 통신 모듈 (컨트롤러, 서비스, 모듈 등)
+│ ├── auth.controller.spec.ts # 인증 컨트롤러 테스트
+│ ├── auth.controller.ts # 인증 API 요청 처리
+│ ├── auth.module.ts # 인증 모듈
+│ └── auth.service.ts # 인증 서비스 로직
+│
+├── common # 공통 모듈 모음 (유틸, 데코레이터, 인터셉터 등)
+│ ├── constants # 상수 정의
+│ │ ├── index.ts
+│ │ └── roles.ts # 역할(Role) 관련 상수
+│ ├── decorator # 커스텀 데코레이터 정의
+│ │ ├── public.decorator.ts # open API 표기를 위한 decorator
+│ │ └── roles.decorator.ts # 역할 배열 주입을 위한 decorator
+│ ├── guard # 인증/인가 관련 가드
+│ │ ├── jwt-auth.guard.ts # isPublic 또는 @nestjs/passport 통과 인 경우 허용
+│ │ └── roles.guard.ts # Roles decorator 로부터 주입받은 권한 목록에 포함된 경우, 또는 ANONYMOUS 대상인 경우 허용
+│ ├── interceptors # 인터셉터 모음
+│ │ └── log.interceptor.ts # 요청/응답 로깅 인터셉터
+│ ├── strategy # Passport 전략 구현
+│ │ └── jwt.strategy.ts # scret-key 로 인증되면 허용
+│ └── types # 공통 타입 정의
+│ └── index.ts
+│
+├── event # 이벤트 서버 통신 모듈
+│ ├── types # 이벤트 관련 타입 정의
+│ ├── event.controller.spec.ts
+│ ├── event.controller.ts
+│ ├── event.module.ts
+│ ├── event.service.spec.ts
+│ └── event.service.ts
+│
+├── proxy # 외부 요청 프록시 처리 (HTTP Proxy)
+│ ├── http-proxy.service.ts # 프록시 요청 구현 서비스
+│ └── proxy.module.ts
+│
+├── app.controller.spec.ts # 앱 진입점 컨트롤러 테스트
+├── app.module.ts # 루트 모듈
+└── main.ts # 애플리케이션 부트스트랩
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ yarn run start
+## 설계 배경
 
-# watch mode
-$ yarn run start:dev
+0. 개발 작업 진전에 있어 환경 구성이 가장 중요하고 오래 걸린다고 생각해서 가장 먼저 작업을 시작했습니다.
 
-# production mode
-$ yarn run start:prod
-```
+1. RolesGuard와 JwtGuard를 모두 사용하여 전역 적용하였습니다.
 
-## Run tests
+2. 하지만 이벤트의 목록 등 일부 API는 권한이 없는 유저도 볼 수 있어야 한다고 생각해서 Pubcic 데코레이터, 유저 역할에 ANONYMOUS를 추가해두었습니다.
 
-```bash
-# unit tests
-$ yarn run test
+3. 요청/응답 로그가 필요하다고 생각해서 interceptor 구현하여 전역 등록하였고, 이는 3개의 서버에 동일하게 등록하여 gw와 서버 간의 통신 여부와 데이터 이동 과정 확인을 위해서도 사용됐습니다.
 
-# e2e tests
-$ yarn run test:e2e
+4. gateway는 기본적으로 서비스가 아닌 보안의 목적이라고 인지하고 있습니다. 따라서 연결되는 DB는 구성하지 않았고 jwt와 role 검증에만 신경을 썼습니다.
 
-# test coverage
-$ yarn run test:cov
-```
+5. 컨트롤러 엔드포인트 맵핑에는, 전역으로 '/api ', 모듈 지정을 위해 각 모듈 이름, 그 뒤에 실제 서버의 엔드포인트를 작성하도록 구성하였습니다. 그러면 event 서버로의 요청일 경우 /api/event/event 같은 엔드포인트가 생성되지만, 저는 각 모듈별로 하나의 서버로 요청하는 것을 원했습니다. 현재는 두개의 서버와 통신하지만 훨씬 더 많은 서버와 통신이 필요해지면 이와 같은 구성이 직관적이라고 생각했습니다.
 
-## Deployment
+6. 서비스 단에서는 환경변수에 등록된 각 모듈별 PREFIX를 지운 후 타겟 서버에 알맞은 엔드포인트로 변환하여 HttpProxy 서비스의 메서드를 호출하도록 하였습니다. 서비스 단에서도 구현한 메서드는 Http 메서드와 이름을 같게 구서하였습니다. (post(), get(), ...)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+7. HttpProxy는 Http 메서드 별로 proxyGet, proxyPost 등으로 구현하였습니다.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+8. 최토 통신 테스트를 위해 작성한 http 요청 메서드를 제너릭으로 만들고 범용으로 사용하려 했지만, 코드의 길이가 너무 길어지고 제너릭 타입들로 인한 코드의 가독성 저하로 위와 같이 구현 방식을 변경하였습니다.
 
-```bash
-$ yarn install -g mau
-$ mau deploy
-```
+## 보완할 점
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+1. 최초에는 gateway 에서 어떤 데이터들이 저장이 필요할까 싶었습니다. 하지만 서버 access log를 gateway 에서 저장한다면, 타 서버의 짐을 덜어줄 수 있을 것 같다고 생각했습니다.
 
-## Resources
+2. 응답 값을 각 서비스 단 내에서 wrapReturnForm 으로 감싸주었긴 하지만 각 서비스 단이 아닌 공통으로 제너릭 타입을 만들지 못한 것이 아쉽습니다. 작업을 진행한다면, 요청 성공 시의 공통된 형태의 객체 포맷을 정하고 요청이 실패했을 때의 폼을 구성하여 하나의 타입으로 선언하고자 합니다.
 
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+3. {api}/{modulename}/{path}/{to}/{target} 식으로 구현한 부분은, 통신 서버의 개수만 생각하여 잘못 설계되었다고 생각합니다. 타깃 서버의 엔드포인트가 많아질 수록 gateway 서버 한 개의 controller는 너무 길어지게 됩니다. 보완 작업을 한다면 auth 모듈은 auth 서버와 통신한다는 것은 베이스로 진행하고 실제 auth 서버의 나눠지는 컨트롤러 prefix에 맞게 엔드포인트 controller를 생성하여 gateway의 auth module에서 controller들을 일괄 등록하는 방식으로 작업할 생각입니다.
