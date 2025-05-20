@@ -32,6 +32,19 @@ export class EventService {
     if (rewards && rewardIds) {
       throw new BadRequestException('Rewards or rewardIds are required');
     }
+
+    if (body.eventStartDate >= body.eventEndDate) {
+      throw new BadRequestException(
+        `eventStartDate can not be further than eventEndDate`,
+      );
+    }
+
+    if (body.rewardStartDate >= body.rewardEndDate) {
+      throw new BadRequestException(
+        `rewardStartDate can not be further than rewardEndDate`,
+      );
+    }
+
     // 등록된 보상을 연결해 생성하는 경우 등록된 보상인 지 확인
     if (rewardIds) {
       const _rewardIds = await this.rewardService.findAllByIds(rewardIds);
