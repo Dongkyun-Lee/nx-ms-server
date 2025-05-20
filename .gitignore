@@ -137,3 +137,4 @@ dist
 
 # 몽고디비 볼륨 마운트
 mongo_db/
+mongodb_data

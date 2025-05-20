@@ -102,10 +102,13 @@ yarn start:dev
 ## README
 
 > 각 서버 별 기능 및 설계 배경은 서버 디렉토리의 README.md 참조 바랍니다.
+>
+> troubleshooing은 프로젝트 진행하면서 고민, 실수 등의 상황과 조치 내용을 작성해둔 파일입니다.
 
 - [gateway readme](./nx-ms-server-gateway/README.md)
 - [auth readme](./nx-ms-server-auth/README.md)
 - [event readme](./nx-ms-server-event/README.md)
+- [troubleshooting](./troubleshooting.md)
 
 ---
 

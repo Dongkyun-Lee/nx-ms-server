@@ -49,7 +49,7 @@ services:
       - EVENT_SERVICE_URL=http://nx-ms-server-event:3000
       - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
       - NODE_ENV=development
-      - MONGODB_URI=mongodb://mongodb:27017/auth_db
+      - MONGODB_URI=mongodb://mongodb:27017/auth-db
     depends_on:
       - mongodb
     networks:
@@ -72,7 +72,7 @@ services:
       - EVENT_SERVICE_URL=http://nx-ms-server-event:3000
       - JWT_SECRET=this-is-a-secret-key-for-my-jwt-token-this-is-super-top-secret
       - NODE_ENV=development
-      - MONGODB_URI=mongodb://mongodb:27017/event_db
+      - MONGODB_URI=mongodb://mongodb:27017/event-db
     depends_on:
       - mongodb
     networks:
