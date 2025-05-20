@@ -27,7 +27,7 @@ export class EventService {
   async create(body: CreateEventRequestDto): Promise<CreateEventResponseDto> {
     const { rewards, rewardIds } = body;
     let errorMessage: string = null;
-    let result = null;
+    let result: EventDocument = null;
     // 보상 없이 생성하는 경우
     if (rewards && rewardIds) {
       throw new BadRequestException('Rewards or rewardIds are required');
@@ -57,7 +57,7 @@ export class EventService {
 
       result = await this.eventModel.findByIdAndUpdate(
         result._id,
-        { rewardIds: ids },
+        { rewardIds: [...result.rewardIds, ...ids] },
         { new: true },
       );
     }
