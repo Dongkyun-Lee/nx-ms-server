@@ -9,7 +9,6 @@ import { User, UserDocument } from './entity/user.entity';
 import {
   CreateUserRequestDto,
   CreateUserResponseDto,
-  DeleteUserRequestDto,
   DeleteUserResponseDto,
   FindByEmailResponseDto,
   UpdateUserRequestDto,
@@ -17,6 +16,7 @@ import {
   UserBaseDto,
 } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
+import { AuthenticatedUserInfo } from 'src/common/type';
 
 @Injectable()
 export class UserService {
@@ -44,11 +44,7 @@ export class UserService {
     return CreateUserResponseDto.fromDocument(await createdUser.save());
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
-  }
-
-  // controller 에서 호출하는 메소드. password 미노출
+  // controller 에서 호출하는 메소드. 반환값 password 미노출
   async getUserByEmail(email: string): Promise<FindByEmailResponseDto> {
     const user = await this.userModel.findOne({ email }).lean().exec();
     if (!user) {
@@ -57,11 +53,11 @@ export class UserService {
     return FindByEmailResponseDto.fromDoc(user);
   }
 
-  // 서비스 내부적으로 호출하는 메소드
+  // LocalGuard에서 사용되는 메소드
   async findByEmailForValidate(email: string): Promise<UserBaseDto> {
     const user = await this.userModel.findOne({ email }).lean().exec();
     if (!user) {
-      // Email or password 잘못된 정보 미노출
+      // Email or password 어느 필드인지 미노출
       throw new NotFoundException(`Email or password is invalid`);
     }
     return UserBaseDto.fromDoc(user);
@@ -115,13 +111,15 @@ export class UserService {
     return UpdateUserResponseDto.fromDocument(updatedUser);
   }
 
-  async deleteUser(req: DeleteUserRequestDto): Promise<DeleteUserResponseDto> {
-    const { email } = req;
-    const user = await this.userModel.findOne({ email }).lean().exec();
-    if (!user) {
+  async deleteUser(
+    user: AuthenticatedUserInfo,
+  ): Promise<DeleteUserResponseDto> {
+    const { email } = user;
+    const target = await this.userModel.findOne({ email }).lean().exec();
+    if (!target) {
       throw new NotFoundException(`User with email ${email} does not exists`);
     }
-    if (user.isDeleted) {
+    if (target.isDeleted) {
       throw new BadRequestException(
         `User widht email ${email} is already deleted`,
       );

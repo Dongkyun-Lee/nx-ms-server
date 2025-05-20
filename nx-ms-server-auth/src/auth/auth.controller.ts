@@ -1,15 +1,6 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Request,
-  UseGuards,
-  Get,
-  NotFoundException,
-} from '@nestjs/common';
+import { Controller, Post, Body, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.gurad';
-import { UserService } from '../user/user.service';
 import {
   LoginRequestDto,
   LoginResponseDto,
@@ -19,11 +10,13 @@ import {
 } from './dto/auth.dto';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserBaseDto } from 'src/user/dto/user.dto';
+import { Roles } from 'src/common/decorator/roles.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Roles('OPERATOR')
   @ApiOperation({ summary: '로그인 요청' })
   @ApiBody({ type: LoginRequestDto })
   @ApiResponse({

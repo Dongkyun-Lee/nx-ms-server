@@ -108,6 +108,8 @@ GET    /claim/my/{rewardClaimId}      [유저] 본인의 특정 보상 요청 �
 GET    /claim/{rewardClaimId}         [운영자, 감시자, 관리자] 특정 보상 요청 이력 상세 조회
 ```
 
+---
+
 ## 설계 배경
 
 ### 공통

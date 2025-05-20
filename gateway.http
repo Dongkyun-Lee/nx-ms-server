@@ -3,7 +3,7 @@ POST http://localhost:3000/api/auth/auth/login
 content-type: application/json
 
 {
-  "email": "test@test.com",
+  "email": "user@test.com",
   "password": "test"
 }
 ###
@@ -11,44 +11,62 @@ POST http://localhost:3000/api/auth/user
 content-type: application/json
 
 {
-  "email": "test@test.com",
+  "email": "user@test.com",
   "password": "test",
   "nickname": "testuser"
 }
 ###
 POST http://localhost:3000/api/auth/auth/refresh
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODI5OTA4NDA3NmUzMWFiZWQyZDIxM2QiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJuaWNrbmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3NDc1NTQ0NDMsImV4cCI6MTc0NzU3NjA0M30.tayg_J_SqD3nxs8F1rp6Y7WEt_f3-UBNvDpEcwMu-To
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiNGVkYWY1MjUxMjgyMGQwMDQ1NTAiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJuaWNrbmFtZSI6InVzZXIiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTc0NzY4NTMwMywiZXhwIjoxNzQ3NzA2OTAzfQ.TKp_2B5JOoQ1Cfqo3EFsfvj-isiA87dUniFJPoBRaPg
 
 {
-  "email": "test@test.com",
+  "email": "user@test.com",
   "refreshToken": "0a9cf89b-885f-4577-a321-2bebe2c5b182"
 }
 
 ###
-GET http://localhost:3000/api/auth/user/test@test.com HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODI5OTA4NDA3NmUzMWFiZWQyZDIxM2QiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJuaWNrbmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3NDc1NTQ0NDMsImV4cCI6MTc0NzU3NjA0M30.tayg_J_SqD3nxs8F1rp6Y7WEt_f3-UBNvDpEcwMu-To
+GET http://localhost:3000/api/auth/user/user@test.com HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiNGVkYWY1MjUxMjgyMGQwMDQ1NTAiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJuaWNrbmFtZSI6InVzZXIiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTc0NzY4NTMwMywiZXhwIjoxNzQ3NzA2OTAzfQ.TKp_2B5JOoQ1Cfqo3EFsfvj-isiA87dUniFJPoBRaPg
 content-type: application/json
 
 ###
 POST http://localhost:3000/api/auth/auth/verify
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODI5OTA4NDA3NmUzMWFiZWQyZDIxM2QiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJuaWNrbmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3NDc1NTQ0NDMsImV4cCI6MTc0NzU3NjA0M30.tayg_J_SqD3nxs8F1rp6Y7WEt_f3-UBNvDpEcwMu-To
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiNGVkYWY1MjUxMjgyMGQwMDQ1NTAiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJuaWNrbmFtZSI6InVzZXIiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTc0NzY4NTMwMywiZXhwIjoxNzQ3NzA2OTAzfQ.TKp_2B5JOoQ1Cfqo3EFsfvj-isiA87dUniFJPoBRaPg
 
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODI5OTA4NDA3NmUzMWFiZWQyZDIxM2QiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJuaWNrbmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3NDc1NTQ0NDMsImV4cCI6MTc0NzU3NjA0M30.tayg_J_SqD3nxs8F1rp6Y7WEt_f3-UBNvDpEcwMu-To"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiNGVkYWY1MjUxMjgyMGQwMDQ1NTAiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJuaWNrbmFtZSI6InVzZXIiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTc0NzY4NTMwMywiZXhwIjoxNzQ3NzA2OTAzfQ.TKp_2B5JOoQ1Cfqo3EFsfvj-isiA87dUniFJPoBRaPg"
 }
 ###
 GET http://localhost:3000/api/event/event
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODI5OTA4NDA3NmUzMWFiZWQyZDIxM2QiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJuaWNrbmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3NDc1NTQ0NDMsImV4cCI6MTc0NzU3NjA0M30.tayg_J_SqD3nxs8F1rp6Y7WEt_f3-UBNvDpEcwMu-To
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiNGVkYWY1MjUxMjgyMGQwMDQ1NTAiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJuaWNrbmFtZSI6InVzZXIiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTc0NzY4NTMwMywiZXhwIjoxNzQ3NzA2OTAzfQ.TKp_2B5JOoQ1Cfqo3EFsfvj-isiA87dUniFJPoBRaPg
 ###
-GET http://localhost:3000/api/event/event/1
+GET http://localhost:3000/api/event/event/682b4dce874767c7da623a48
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODI5OTA4NDA3NmUzMWFiZWQyZDIxM2QiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJuaWNrbmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3NDc1NTQ0NDMsImV4cCI6MTc0NzU3NjA0M30.tayg_J_SqD3nxs8F1rp6Y7WEt_f3-UBNvDpEcwMu-To
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiNGVkYWY1MjUxMjgyMGQwMDQ1NTAiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJuaWNrbmFtZSI6InVzZXIiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTc0NzY4NTMwMywiZXhwIjoxNzQ3NzA2OTAzfQ.TKp_2B5JOoQ1Cfqo3EFsfvj-isiA87dUniFJPoBRaPg
 
 ###
 POST http://localhost:3000/api/event/event
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODI5OTA4NDA3NmUzMWFiZWQyZDIxM2QiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJuaWNrbmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3NDc1NTQ0NDMsImV4cCI6MTc0NzU3NjA0M30.tayg_J_SqD3nxs8F1rp6Y7WEt_f3-UBNvDpEcwMu-To
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiNGVkYWY1MjUxMjgyMGQwMDQ1NTAiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJuaWNrbmFtZSI6InVzZXIiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTc0NzY4NTMwMywiZXhwIjoxNzQ3NzA2OTAzfQ.TKp_2B5JOoQ1Cfqo3EFsfvj-isiA87dUniFJPoBRaPg
 
+###
+POST http://localhost:3000/api/event/claim
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiNGVkYWY1MjUxMjgyMGQwMDQ1NTAiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJuaWNrbmFtZSI6InVzZXIiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTc0NzY4NTMwMywiZXhwIjoxNzQ3NzA2OTAzfQ.TKp_2B5JOoQ1Cfqo3EFsfvj-isiA87dUniFJPoBRaPg
+
+{
+  "eventId": "682b5a8ef50e6c09c3a46fd1"
+}
+
+### [유저] 보상 신청 이력 목록
+GET http://localhost:3000/api/event/claim/my
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiNGVkYWY1MjUxMjgyMGQwMDQ1NTAiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJuaWNrbmFtZSI6InVzZXIiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTc0NzY4NTMwMywiZXhwIjoxNzQ3NzA2OTAzfQ.TKp_2B5JOoQ1Cfqo3EFsfvj-isiA87dUniFJPoBRaPg
+
+### [유저] 보상 신청 이력 상세
+GET http://localhost:3000/api/event/claim/my/682b8feee6b7b39f577ebf3d
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiNGVkYWY1MjUxMjgyMGQwMDQ1NTAiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJuaWNrbmFtZSI6InVzZXIiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTc0NzY4NTMwMywiZXhwIjoxNzQ3NzA2OTAzfQ.TKp_2B5JOoQ1Cfqo3EFsfvj-isiA87dUniFJPoBRaPg

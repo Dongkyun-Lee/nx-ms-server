@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
+  Patch,
   Post,
   Query,
   Request,
@@ -72,5 +74,26 @@ export class AuthController {
     @Query() query: any,
   ) {
     return this.authService.get(req, req.path, headers, query);
+  }
+
+  @Roles(...ALL_ROLES_EXCEPT_ANONYMOUS)
+  @Patch('user/my')
+  async updateUser(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+    @Body() body: any,
+  ) {
+    return await this.authService.post(req, req.path, body, headers, query);
+  }
+
+  @Roles(...ALL_ROLES_EXCEPT_ANONYMOUS)
+  @Delete('user/my/:id')
+  async deleteUser(
+    @Request() req: any,
+    @Headers() headers: any,
+    @Query() query: any,
+  ) {
+    return this.authService.delete(req, req.path, headers, query);
   }
 }

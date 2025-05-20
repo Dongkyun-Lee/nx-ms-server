@@ -1,1 +1,1 @@
-export * from './roles';
+export * from './user-role.constant';

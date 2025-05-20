@@ -25,7 +25,7 @@ export class RolesGuard implements CanActivate {
     const rolesHeader: string = request.headers[HEADER_ROLES_KEY];
 
     if (!rolesHeader) {
-      throw new ForbiddenException('사용자 권한 정보가 없습니다.');
+      throw new ForbiddenException('Can not find authroization information');
     }
 
     const userRoles = rolesHeader.split(',').map((r) => r.trim());
@@ -33,7 +33,7 @@ export class RolesGuard implements CanActivate {
     const hasRole = requiredRoles.some((role) => userRoles.includes(role));
 
     if (!hasRole) {
-      throw new ForbiddenException('접근 권한이 없습니다.');
+      throw new ForbiddenException('Unauthorized');
     }
 
     return true;
